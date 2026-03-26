@@ -1,0 +1,54 @@
+{
+  "name": "agentkit-ai",
+  "version": "0.4.0",
+  "description": "Intelligent orchestration layer for agentic coding — smart skill loading, persistent memory, 70% cost reduction, enforced workflows, and 10+ platform support.",
+  "keywords": [
+    "claude-code",
+    "ai-coding",
+    "agent",
+    "llm",
+    "cursor",
+    "codex",
+    "gemini",
+    "skill-router",
+    "memory",
+    "workflow",
+    "anthropic"
+  ],
+  "homepage": "https://github.com/Ajaysable123/AgentKit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ajaysable123/AgentKit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ajaysable123/AgentKit/issues"
+  },
+  "license": "MIT",
+  "author": "AgentKit Team",
+  "bin": {
+    "agentkit": "./cli/index.js"
+  },
+  "main": "./cli/index.js",
+  "files": [
+    "cli/",
+    "hooks/",
+    "memory/",
+    "platform/",
+    "router/",
+    "skills/",
+    "workflow/",
+    "config/",
+    "requirements.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start":   "node cli/index.js",
+    "postinstall": "node cli/postinstall.js",
+    "test":    "node cli/test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "preferGlobal": false
+}

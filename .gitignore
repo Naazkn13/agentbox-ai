@@ -8,3 +8,7 @@ STATUS.md
 __pycache__/
 *.pyc
 *.pyo
+node_modules/
+*.tgz
+.npm/
+npm-debug.log*
