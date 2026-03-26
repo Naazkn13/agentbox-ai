@@ -1,0 +1,30 @@
+# Development + local files
+tokens.txt
+.env
+*.secret
+plans/
+STATUS.md
+agentkit-deep-dive.jsx
+data/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Node
+node_modules/
+*.tgz
+npm-debug.log*
+.npm/
+
+# Tests / CI
+.github/
+.travis.yml
+*.test.js
+
+# Git
+.git/
+.gitignore
