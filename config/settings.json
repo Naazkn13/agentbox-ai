@@ -1,6 +1,6 @@
 {
   "_comment": "AgentKit Claude Code settings template. Copy relevant sections into your .claude/settings.json",
-  "_agentkit_version": "0.2.0",
+  "_agentkit_version": "0.3.0",
 
   "hooks": {
     "UserPromptSubmit": [
@@ -17,6 +17,14 @@
           {
             "type": "command",
             "command": "bash ${AGENTKIT_HOME}/hooks/memory_inject.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/model_router_hook.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/thinking_budget.sh"
           }
         ]
       }
@@ -39,6 +47,10 @@
           {
             "type": "command",
             "command": "bash ${AGENTKIT_HOME}/hooks/memory_recorder.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/cost_dashboard.sh"
           }
         ]
       }
@@ -57,9 +69,9 @@
 
   "_notes": {
     "AGENTKIT_HOME": "Set this env var to the absolute path of your AgentKit install dir",
-    "UserPromptSubmit": "Runs skill router + loads session handoff (first turn) + injects relevant memory",
+    "UserPromptSubmit": "Runs skill router + session handoff + memory inject + model router + thinking budget",
     "PreToolUse": "Forced-eval hook — reminds Claude to apply active skills before Edit/Bash/Write",
-    "PostToolUse": "Memory recorder — captures entities from Read/Edit/Bash into knowledge graph",
+    "PostToolUse": "Memory recorder + cost dashboard — captures entities and logs per-turn cost",
     "Stop": "Session end — compresses session into handoff document via Haiku"
   }
 }
