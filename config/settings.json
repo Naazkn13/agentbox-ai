@@ -1,0 +1,34 @@
+{
+  "_comment": "AgentKit Claude Code settings template. Copy relevant sections into your .claude/settings.json",
+  "_agentkit_version": "0.1.0",
+
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${AGENTKIT_HOME}/hooks/skill_router_hook.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Bash|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/forced_eval.sh"
+          }
+        ]
+      }
+    ]
+  },
+
+  "_notes": {
+    "AGENTKIT_HOME": "Set this env var to the absolute path of your AgentKit install dir",
+    "UserPromptSubmit": "Runs the skill router on every user message — classifies task, injects relevant skills",
+    "PreToolUse": "Forced-eval hook — reminds Claude to apply active skills before Edit/Bash/Write"
+  }
+}

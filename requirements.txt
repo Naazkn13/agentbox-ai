@@ -1,0 +1,8 @@
+# AgentKit — Python dependencies
+# Install with: pip install -r requirements.txt
+
+# YAML parsing for skills/registry.yaml
+PyYAML>=6.0
+
+# Anthropic SDK — for Haiku fallback classifier (Tier 3) and session handoffs
+anthropic>=0.40.0
