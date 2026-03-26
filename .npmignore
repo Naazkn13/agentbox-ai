@@ -8,6 +8,11 @@ __pycache__/
 *.pyd
 *.pyw
 
+# ── IDE / editor config ──────────────────────────────────────────────────────
+.claude/
+.vscode/
+.idea/
+
 # ── Sensitive / local-only files ─────────────────────────────────────────────
 tokens.txt
 .env
