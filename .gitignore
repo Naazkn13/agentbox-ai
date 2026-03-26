@@ -4,3 +4,6 @@ tokens.txt
 .agentkit/
 data/
 plans/
+__pycache__/
+*.pyc
+*.pyo
