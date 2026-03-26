@@ -4,6 +4,7 @@ tokens.txt
 .agentkit/
 data/
 plans/
+STATUS.md
 __pycache__/
 *.pyc
 *.pyo
