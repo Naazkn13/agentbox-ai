@@ -26,22 +26,9 @@
   "license": "MIT",
   "author": "AgentKit Team",
   "bin": {
-    "agentkit": "./cli/index.js"
+    "agentkit": "cli/index.js"
   },
-  "main": "./cli/index.js",
-  "files": [
-    "cli/",
-    "hooks/",
-    "memory/",
-    "platform/",
-    "router/",
-    "skills/",
-    "workflow/",
-    "config/",
-    "requirements.txt",
-    "README.md",
-    "LICENSE"
-  ],
+  "main": "cli/index.js",
   "scripts": {
     "start":   "node cli/index.js",
     "postinstall": "node cli/postinstall.js",

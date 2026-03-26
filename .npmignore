@@ -1,30 +1,36 @@
-# Development + local files
-tokens.txt
-.env
-*.secret
-plans/
-STATUS.md
-agentkit-deep-dive.jsx
-data/
-
-# Python bytecode
+# ── Python bytecode ─────────────────────────────────────────────────────────
 __pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
+*.pyw
 
-# Node
+# ── Sensitive / local-only files ─────────────────────────────────────────────
+tokens.txt
+.env
+*.secret
+logs.txt
+agentkit-deep-dive.jsx
+
+# ── Local state directories (generated at runtime, not source) ───────────────
+.agentkit/
+data/
+plans/
+
+# ── Developer docs (local tracking) ─────────────────────────────────────────
+STATUS.md
+
+# ── Node ─────────────────────────────────────────────────────────────────────
 node_modules/
 *.tgz
 npm-debug.log*
 .npm/
+package-lock.json
 
-# Tests / CI
-.github/
-.travis.yml
-*.test.js
-
-# Git
+# ── Version control + npm meta ───────────────────────────────────────────────
 .git/
 .gitignore
+.npmignore
