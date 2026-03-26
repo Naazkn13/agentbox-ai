@@ -1,6 +1,6 @@
 {
   "_comment": "AgentKit Claude Code settings template. Copy relevant sections into your .claude/settings.json",
-  "_agentkit_version": "0.3.0",
+  "_agentkit_version": "0.4.0",
 
   "hooks": {
     "UserPromptSubmit": [
@@ -25,22 +25,39 @@
           {
             "type": "command",
             "command": "bash ${AGENTKIT_HOME}/hooks/thinking_budget.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/workflow_state.sh"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Bash|Write|MultiEdit",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
             "command": "bash ${AGENTKIT_HOME}/hooks/forced_eval.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/plan_gate.sh"
           }
         ]
       }
     ],
     "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/research_gate.sh"
+          }
+        ]
+      },
       {
         "matcher": "Read|Edit|Write|Bash|MultiEdit",
         "hooks": [
@@ -51,6 +68,15 @@
           {
             "type": "command",
             "command": "bash ${AGENTKIT_HOME}/hooks/cost_dashboard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${AGENTKIT_HOME}/hooks/quality_gates.sh"
           }
         ]
       }
@@ -69,9 +95,10 @@
 
   "_notes": {
     "AGENTKIT_HOME": "Set this env var to the absolute path of your AgentKit install dir",
-    "UserPromptSubmit": "Runs skill router + session handoff + memory inject + model router + thinking budget",
-    "PreToolUse": "Forced-eval hook — reminds Claude to apply active skills before Edit/Bash/Write",
-    "PostToolUse": "Memory recorder + cost dashboard — captures entities and logs per-turn cost",
+    "UserPromptSubmit": "Skill router + session handoff + memory + model router + thinking budget + workflow state",
+    "PreToolUse (Edit)": "Forced-eval + plan gate — blocks coding without an approved plan",
+    "PostToolUse (Read)": "Research gate — tracks file reads for RESEARCH→PLAN transition",
+    "PostToolUse (Edit)": "Memory + cost dashboard + quality gates (syntax/lint/types/tests)",
     "Stop": "Session end — compresses session into handoff document via Haiku"
   }
 }
