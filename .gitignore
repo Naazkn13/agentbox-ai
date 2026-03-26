@@ -3,3 +3,4 @@ tokens.txt
 *.secret
 .agentkit/
 data/
+plans/
