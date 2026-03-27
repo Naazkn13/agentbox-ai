@@ -71,7 +71,7 @@ class ClaudeCodeAdapter(PlatformAdapter):
         agentkit_home = config.agentkit_home or os.environ.get("AGENTKIT_HOME") or str(
             Path(__file__).parent.parent.parent.resolve()
         )
-        settings = _merge_hooks(settings, agentkit_home)
+        settings = _merge_hooks(settings, agentkit_home, config.python_cmd)
         settings_path.parent.mkdir(parents=True, exist_ok=True)
         settings_path.write_text(json.dumps(settings, indent=2))
         result.files_written.append(str(settings_path))
@@ -88,7 +88,7 @@ class ClaudeCodeAdapter(PlatformAdapter):
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _merge_hooks(settings: dict, agentkit_home: str) -> dict:
+def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3") -> dict:
     """Merge AgentKit hooks into existing settings.json without clobbering."""
     hooks = settings.setdefault("hooks", {})
 
@@ -104,8 +104,9 @@ def _merge_hooks(settings: dict, agentkit_home: str) -> dict:
         buckets.append(entry)
 
     H = agentkit_home
-    _ensure_hook("UserPromptSubmit", None, f"python3 {H}/hooks/spawn_hook.py")
-    _ensure_hook("UserPromptSubmit", None, f"python3 {H}/hooks/skill_router_hook.py")
+    PY = python_cmd
+    _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/spawn_hook.py")
+    _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/skill_router_hook.py")
     _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/session_start.sh")
     _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/memory_inject.sh")
     _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/model_router_hook.sh")

@@ -43,6 +43,7 @@ class AgentKitConfig:
     quality_gates_enabled: bool = True
     workflow_enforcement: bool = True
     agentkit_home: str = ""
+    python_cmd: str = "python3"   # "python3" on Mac/Linux, "python" on Windows
 
 
 @dataclass
