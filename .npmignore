@@ -19,11 +19,14 @@ tokens.txt
 *.secret
 logs.txt
 agentkit-deep-dive.jsx
+cli/create-issues.sh
+cli/create_issues.py
 
 # ── Local state directories (generated at runtime, not source) ───────────────
+# Use leading / to anchor to package root only — avoids excluding skills/data/, skills/plans/ etc.
 .agentkit/
-data/
-plans/
+/data/
+/plans/
 
 # ── Developer docs (local tracking) ─────────────────────────────────────────
 STATUS.md

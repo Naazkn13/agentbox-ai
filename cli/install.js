@@ -135,7 +135,7 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.0");
+  log("\nAgentKit Installer v0.5.2");
   log("─────────────────────────\n");
 
   // 1. Detect platforms
