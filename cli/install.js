@@ -92,13 +92,29 @@ const BUNDLES = {
 // ---------------------------------------------------------------------------
 
 /**
+ * Detect which python executable is available.
+ * Returns "python3", "python", or null.
+ */
+function detectPython() {
+  for (const cmd of ["python3", "python"]) {
+    const r = spawnSync(cmd, ["--version"], { encoding: "utf8" });
+    if (!r.error && r.status === 0) {
+      const out = (r.stdout || r.stderr || "").trim();
+      // Reject the Windows Store stub — it prints nothing and exits 9009
+      if (out.startsWith("Python 3")) return cmd;
+    }
+  }
+  return null;
+}
+
+/**
  * Call the Python platform adapter to do the actual file installation.
  * Returns { success, filesWritten, error }.
  */
-function runPythonInstaller(platformId, skillIds, agentKitHome) {
+function runPythonInstaller(platformId, skillIds, agentKitHome, pythonCmd) {
   const skillIdsStr = skillIds.join(",");
   const result = spawnSync(
-    "python3",
+    pythonCmd,
     [
       path.join(agentKitHome, "cli", "installer_bridge.py"),
       "--platform", platformId,
@@ -135,10 +151,21 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.4");
+  log("\nAgentKit Installer v0.5.5");
   log("─────────────────────────\n");
 
-  // 1. Detect platforms
+  // 1. Check Python is available (required for platform adapters)
+  const pythonCmd = detectPython();
+  if (!pythonCmd) {
+    log("  ✗ Python 3 not found.\n");
+    log("  AgentKit requires Python 3.9+ to install skill files.\n");
+    log("  Install it from https://www.python.org/downloads/");
+    log("  (on Windows: check 'Add python.exe to PATH' during install)\n");
+    log("  Then re-run: npx agentkit-ai@latest init\n");
+    return { success: false, platforms: [] };
+  }
+
+  // 2. Detect platforms
   log("Detecting platforms...");
   const detected = detectPlatforms();
 
@@ -154,21 +181,21 @@ function install(options = {}) {
   }
   log("");
 
-  // 2. Determine target platforms
+  // 3. Determine target platforms
   const targetPlatforms = options.platforms
     ? detected.filter(p => options.platforms.includes(p.id))
     : detected;
 
-  // 3. Determine skill bundle
+  // 4. Determine skill bundle
   const bundleKey = options.bundle || "backend-pro";
   const bundle    = BUNDLES[bundleKey] || BUNDLES["backend-pro"];
   log(`Using skill bundle: ${bundle.name} (${bundle.skills.length} skills)\n`);
 
-  // 4. Install per platform
+  // 5. Install per platform
   const results = [];
   for (const platform of targetPlatforms) {
     log(`Installing for ${platform.name}...`);
-    const result = runPythonInstaller(platform.id, bundle.skills, agentKitHome);
+    const result = runPythonInstaller(platform.id, bundle.skills, agentKitHome, pythonCmd);
 
     if (result.success) {
       for (const f of (result.filesWritten || [])) {
