@@ -151,7 +151,7 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.5");
+  log("\nAgentKit Installer v0.5.6");
   log("─────────────────────────\n");
 
   // 1. Check Python is available (required for platform adapters)
@@ -220,8 +220,11 @@ function install(options = {}) {
     log("\n  Estimated savings:");
     log("    Tokens:  ~40,000 → ~5,000/session (89% reduction)");
     log("    Cost:    ~70% reduction vs default all-Sonnet\n");
-    log("  Run: npx agentkit status   → view real-time stats");
-    log("  Run: npx agentkit costs    → view cost analytics");
+    log("  To use the agentkit command globally:");
+    log("    npm install -g agentkit-ai\n");
+    log("  Then run:");
+    log("    agentkit status   → view real-time stats");
+    log("    agentkit costs    → view cost analytics");
   } else {
     log("✗ Installation failed for all platforms.");
   }

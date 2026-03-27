@@ -155,17 +155,26 @@ Wave 4 →  reviewer   (sonnet-4.6)    Final code review             [waits: wri
 
 ## CLI Reference
 
+**Without global install** (use `npx agentkit-ai <command>`):
 ```bash
-npx agentkit init              # Detect platforms → install
-npx agentkit sync              # Re-sync after adding skills
-npx agentkit status            # Health check + cost summary
-npx agentkit costs --days 7    # Weekly cost analytics
-npx agentkit skills list       # Browse all 50 skills
-npx agentkit workflow status   # Current Research/Plan/Execute state
-npx agentkit workflow approve  # Approve plan → unlock coding
-npx agentkit detect            # Show detected AI coding tools
-npx agentkit uninstall         # Remove all AgentKit files
-npx agentkit uninstall --purge # Also delete runtime data (costs/memory/state)
+npx agentkit-ai@latest init    # First install
+npx agentkit-ai sync           # Re-sync after adding skills
+npx agentkit-ai status         # Health check + cost summary
+npx agentkit-ai costs --days 7 # Weekly cost analytics
+```
+
+**With global install** (`npm install -g agentkit-ai`, then use `agentkit`):
+```bash
+agentkit init              # Detect platforms → install
+agentkit sync              # Re-sync after adding skills
+agentkit status            # Health check + cost summary
+agentkit costs --days 7    # Weekly cost analytics
+agentkit skills list       # Browse all 50 skills
+agentkit workflow status   # Current Research/Plan/Execute state
+agentkit workflow approve  # Approve plan → unlock coding
+agentkit detect            # Show detected AI coding tools
+agentkit uninstall         # Remove all AgentKit files
+agentkit uninstall --purge # Also delete runtime data (costs/memory/state)
 ```
 
 ---
