@@ -11,7 +11,7 @@ const { spawnSync } = require("child_process");
 function costs(options = {}) {
   const agentKitHome = options.agentKitHome
     || process.env.AGENTKIT_HOME
-    || path.join(process.env.HOME || "~", ".agentkit");
+    || path.join(__dirname, "..");
 
   const days = options.days || 7;
 

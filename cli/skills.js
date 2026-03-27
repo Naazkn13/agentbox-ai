@@ -12,7 +12,7 @@ const { spawnSync } = require("child_process");
 function listSkills(options = {}) {
   const agentKitHome = options.agentKitHome
     || process.env.AGENTKIT_HOME
-    || path.join(process.env.HOME || "~", ".agentkit");
+    || path.join(__dirname, "..");
 
   const skillsDir = path.join(agentKitHome, "skills");
   if (!fs.existsSync(skillsDir)) {
@@ -51,7 +51,7 @@ for s in sorted(skills, key=lambda x: x.category):
 function skillInfo(skillId, options = {}) {
   const agentKitHome = options.agentKitHome
     || process.env.AGENTKIT_HOME
-    || path.join(process.env.HOME || "~", ".agentkit");
+    || path.join(__dirname, "..");
 
   const result = spawnSync(
     "python3",

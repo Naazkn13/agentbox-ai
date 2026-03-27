@@ -13,7 +13,7 @@ const { install } = require("./install");
 function sync(options = {}) {
   const agentKitHome = options.agentKitHome
     || process.env.AGENTKIT_HOME
-    || path.join(process.env.HOME || "~", ".agentkit");
+    || path.join(__dirname, "..");
 
   const silent = options.silent || false;
   function log(...args) { if (!silent) console.log(...args); }
