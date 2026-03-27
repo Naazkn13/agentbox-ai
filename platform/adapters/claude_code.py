@@ -54,7 +54,7 @@ class ClaudeCodeAdapter(PlatformAdapter):
         for skill in skills:
             dest_dir = skills_dir / skill.category
             dest_dir.mkdir(parents=True, exist_ok=True)
-            dest = dest_dir / "SKILL.md"
+            dest = dest_dir / f"{skill.id}.md"   # unique per skill, not shared SKILL.md
             dest.write_text(skill.content)
             result.files_written.append(str(dest))
 
@@ -67,8 +67,9 @@ class ClaudeCodeAdapter(PlatformAdapter):
             except Exception:
                 pass
 
-        agentkit_home = config.agentkit_home or str(
-            Path(os.environ.get("AGENTKIT_HOME", "~/.agentkit")).expanduser()
+        # Resolve package root: prefer explicit config, then env var, then relative to this file
+        agentkit_home = config.agentkit_home or os.environ.get("AGENTKIT_HOME") or str(
+            Path(__file__).parent.parent.parent.resolve()
         )
         settings = _merge_hooks(settings, agentkit_home)
         settings_path.parent.mkdir(parents=True, exist_ok=True)
