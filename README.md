@@ -16,7 +16,7 @@
 
 <!-- Replace the block below with your screen recording: npx agentkit init → skills loading → cost dashboard -->
 ```
-$ npx agentkit init
+$ npx agentkit-ai@latest init
 
 AgentKit Installer v0.5.4
 ─────────────────────────
@@ -62,15 +62,18 @@ Real numbers from AgentKit smoke tests, measured across a 50-turn coding session
 ## One Command Install
 
 ```bash
-npx agentkit init
+npx agentkit-ai@latest init
 ```
 
 That's it. AgentKit detects your platforms, installs the right skill format for each, wires all hooks, and configures model routing automatically.
 
-**Or install globally:**
+**Or install globally** (then use `agentkit` as a command anywhere):
 ```bash
 npm install -g agentkit-ai
+agentkit init
 ```
+
+> **Note:** The npm package name is `agentkit-ai`. After a global install, the CLI command is `agentkit`.
 
 **Requirements:** Node.js ≥ 18 · Python ≥ 3.9 · Claude Code (for full feature set)
 
@@ -169,7 +172,7 @@ npx agentkit uninstall --purge # Also delete runtime data (costs/memory/state)
 
 ## Skill Bundles
 
-Pick a bundle at `npx agentkit init` or pass `--bundle <name>`:
+Pick a bundle at install time or pass `--bundle <name>`:
 
 | Bundle | Skills | Best for |
 |--------|--------|----------|
