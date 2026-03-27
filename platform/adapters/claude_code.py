@@ -90,21 +90,33 @@ class ClaudeCodeAdapter(PlatformAdapter):
 
 def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3") -> dict:
     """Merge AgentKit hooks into existing settings.json without clobbering."""
+    from pathlib import Path as _Path
+
+    # Always use forward slashes — Python accepts them on Windows and it
+    # avoids all JSON backslash-escaping issues in hook command strings.
+    H = _Path(agentkit_home).as_posix()
+    PY = python_cmd
+
     hooks = settings.setdefault("hooks", {})
 
     def _ensure_hook(event: str, matcher: str | None, command: str) -> None:
+        """Add hook if no existing hook references the same script filename."""
+        script = command.split("/")[-1]   # e.g. "spawn_hook.py"
         buckets = hooks.setdefault(event, [])
         for bucket in buckets:
             for h in bucket.get("hooks", []):
-                if command in h.get("command", ""):
-                    return   # already present
+                existing = h.get("command", "")
+                # Match by script name so stale python3/python variants get replaced
+                if script in existing:
+                    # Update the command in-place if the executable changed
+                    if existing != command:
+                        h["command"] = command
+                    return
         entry: dict = {"hooks": [{"type": "command", "command": command}]}
         if matcher:
             entry["matcher"] = matcher
         buckets.append(entry)
 
-    H = agentkit_home
-    PY = python_cmd
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/spawn_hook.py")
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/skill_router_hook.py")
     _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/session_start.sh")

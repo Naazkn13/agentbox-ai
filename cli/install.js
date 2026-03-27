@@ -152,7 +152,7 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.7");
+  log("\nAgentKit Installer v0.5.8");
   log("─────────────────────────\n");
 
   // 1. Check Python is available (required for platform adapters)

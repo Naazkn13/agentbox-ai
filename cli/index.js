@@ -141,7 +141,7 @@ switch (cmd) {
 
 function printHelp() {
   console.log(`
-AgentKit v0.5.7 — Intelligent orchestration for agentic coding
+AgentKit v0.5.8 — Intelligent orchestration for agentic coding
 
 Usage: npx agentkit <command> [options]
 
