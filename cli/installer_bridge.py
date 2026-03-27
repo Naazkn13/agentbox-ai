@@ -13,9 +13,10 @@ import sys
 def main() -> None:
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--platform", required=True)
-    parser.add_argument("--skills",   required=True, help="Comma-separated skill IDs")
-    parser.add_argument("--home",     required=True, help="AGENTKIT_HOME path")
+    parser.add_argument("--platform",   required=True)
+    parser.add_argument("--skills",     required=True, help="Comma-separated skill IDs")
+    parser.add_argument("--home",       required=True, help="AGENTKIT_HOME path")
+    parser.add_argument("--python-cmd", default="python3", help="Python executable name")
     args = parser.parse_args()
 
     sys.path.insert(0, args.home)
@@ -55,7 +56,7 @@ def main() -> None:
         # Fall back to all skills if none matched
         skills = all_skills
 
-    config = AgentKitConfig(agentkit_home=args.home)
+    config = AgentKitConfig(agentkit_home=args.home, python_cmd=args.python_cmd)
     result = adapter.install(skills, config)
 
     print(json.dumps({

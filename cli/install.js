@@ -117,9 +117,10 @@ function runPythonInstaller(platformId, skillIds, agentKitHome, pythonCmd) {
     pythonCmd,
     [
       path.join(agentKitHome, "cli", "installer_bridge.py"),
-      "--platform", platformId,
-      "--skills",   skillIdsStr,
-      "--home",     agentKitHome,
+      "--platform",   platformId,
+      "--skills",     skillIdsStr,
+      "--home",       agentKitHome,
+      "--python-cmd", pythonCmd,
     ],
     { encoding: "utf8", cwd: process.cwd() },
   );
@@ -151,7 +152,7 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.6");
+  log("\nAgentKit Installer v0.5.7");
   log("─────────────────────────\n");
 
   // 1. Check Python is available (required for platform adapters)
