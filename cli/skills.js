@@ -83,7 +83,7 @@ function _findSkillFiles(dir) {
     for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
       const full = path.join(d, entry.name);
       if (entry.isDirectory()) walk(full);
-      else if (entry.name === "SKILL.md" || entry.name.endsWith("SKILL.md")) results.push(full);
+      else if (entry.name.endsWith(".md") && entry.name !== "README.md") results.push(full);
     }
   }
   walk(dir);

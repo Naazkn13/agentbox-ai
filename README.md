@@ -6,6 +6,7 @@
 
 [![npm version](https://img.shields.io/npm/v/agentkit-ai?color=blue&label=npm)](https://www.npmjs.com/package/agentkit-ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-50-orange)](https://github.com/Ajaysable123/AgentKit#skill-bundles)
 [![Platforms](https://img.shields.io/badge/platforms-10%2B-purple)](https://github.com/Ajaysable123/AgentKit#works-with)
 [![GitHub stars](https://img.shields.io/github/stars/Ajaysable123/AgentKit?style=social)](https://github.com/Ajaysable123/AgentKit)
 
@@ -17,14 +18,14 @@
 ```
 $ npx agentkit init
 
-AgentKit Installer v0.4.0
+AgentKit Installer v0.5.0
 ─────────────────────────
 
 Detecting platforms...
   ✓ Claude Code  (full)
   ✓ Cursor       (partial)
 
-Installing Backend Pro bundle (7 skills)...
+Installing Backend Pro bundle (22 skills)...
   ✓ Skills converted for Claude Code (SKILL.md native)
   ✓ Skills converted for Cursor (.mdc format)
   ✓ Model routing enabled  →  Haiku / Sonnet / Opus
@@ -102,7 +103,7 @@ AgentKit is a 5-layer runtime that sits between your prompts and the model:
 | ![Augment](https://img.shields.io/badge/Augment-Tier_3_Basic-6B7280) | Skills as context | `.augment/context.md` |
 | ![Antigravity](https://img.shields.io/badge/Antigravity-Tier_1_Full-D97706) | Full plugin system | `.antigravity/plugins/` |
 
-**Ruflo:** AgentKit makes your Ruflo swarms 3× cheaper by routing worker agents to Haiku and injecting only relevant skills per agent. [See issue #1 →](https://github.com/Ajaysable123/AgentKit/issues)
+**Ruflo:** AgentKit makes your Ruflo swarms 3× cheaper by routing worker agents to Haiku and injecting only relevant skills per agent. [See issue #1 →](https://github.com/Ajaysable123/AgentKit/issues/1)
 
 ---
 
@@ -111,6 +112,7 @@ AgentKit is a 5-layer runtime that sits between your prompts and the model:
 | Feature | AgentKit | Superpowers | claude-mem | ClaudeFast |
 |---------|----------|-------------|------------|------------|
 | Smart skill loading | ✅ Auto-routed, 89% token reduction | ✅ Manual SKILL.md | ❌ | ❌ |
+| Skill library | ✅ **50 skills**, 7 role bundles | ❌ BYO only | ❌ | ❌ |
 | Persistent memory | ✅ SQLite graph + session handoffs | ❌ | ✅ Basic | ❌ |
 | Auto model routing | ✅ Haiku/Sonnet/Opus by complexity | ❌ | ❌ | ⚠️ Basic |
 | Workflow enforcement | ✅ Research→Plan→Execute→Review→Ship | ⚠️ Suggested only | ❌ | ❌ |
@@ -129,7 +131,7 @@ npx agentkit init              # Detect platforms → install
 npx agentkit sync              # Re-sync after adding skills
 npx agentkit status            # Health check + cost summary
 npx agentkit costs --days 7    # Weekly cost analytics
-npx agentkit skills list       # Browse installed skills
+npx agentkit skills list       # Browse all 50 skills
 npx agentkit workflow status   # Current Research/Plan/Execute state
 npx agentkit workflow approve  # Approve plan → unlock coding
 npx agentkit detect            # Show detected AI coding tools
@@ -141,13 +143,38 @@ npx agentkit detect            # Show detected AI coding tools
 
 Pick a bundle at `npx agentkit init` or pass `--bundle <name>`:
 
-| Bundle | Skills included |
-|--------|----------------|
-| `backend-pro` | python-debugger, tdd-workflow, rest-api, sql-query, auth-jwt, clean-code, docker |
-| `frontend-wizard` | js-debugger, jest-testing, react-patterns, graphql, clean-code |
-| `full-stack-hero` | All 11 skills |
-| `ai-engineer` | llm-prompting, python-debugger, rest-api, clean-code, tdd-workflow |
-| `devops-master` | docker, python-debugger, sql-query, clean-code |
+| Bundle | Skills | Best for |
+|--------|--------|----------|
+| `backend-pro` | python-debugger, go-debugger, pytest, rest-api, grpc, sql, mongodb, redis, auth, owasp, docker, nginx + 10 more | Python/Go backend engineers |
+| `frontend-wizard` | js-debugger, jest, cypress, playwright, react, vue, nextjs, css, state-mgmt, a11y, graphql + 2 more | Frontend / React developers |
+| `full-stack-hero` | All 50 skills | Full-stack teams |
+| `ai-engineer` | llm-prompting, rag-pipeline, function-calling, agent-design, eval-testing + 5 more | LLM / AI application developers |
+| `devops-master` | docker, kubernetes, github-actions, terraform, monitoring, nginx + 3 more | DevOps / Platform engineers |
+| `data-scientist` | pandas, data-viz, ml-pipeline, sql, pytest + 2 more | Data scientists / ML engineers |
+| `mobile-dev` | react-native, flutter, rest-api, auth-jwt + 3 more | Mobile developers |
+
+---
+
+## All 50 Skills
+
+<details>
+<summary>Click to expand full skill list</summary>
+
+| Category | Skills |
+|----------|--------|
+| **Debugging** | python-debugger, js-debugger, go-debugger, network-debugger |
+| **Testing** | tdd-workflow, jest-testing, pytest-workflow, cypress-e2e, playwright-testing, contract-testing |
+| **API** | rest-api, graphql, grpc, openapi-design, webhook-design |
+| **Database** | sql-query, prisma-orm, mongodb, redis-caching, database-migrations |
+| **Frontend** | react-patterns, nextjs-patterns, css-layout, vue-patterns, state-management, accessibility |
+| **DevOps** | docker, kubernetes, github-actions, terraform, monitoring-observability, nginx-config |
+| **Security** | auth-jwt, owasp-top10, secrets-management, api-security |
+| **Refactoring** | clean-code, performance-optimization, code-review, legacy-modernization |
+| **AI Engineering** | llm-prompting, rag-pipeline, function-calling, agent-design, eval-testing |
+| **Data Science** | pandas-workflow, data-visualization, ml-pipeline |
+| **Mobile** | react-native, flutter |
+
+</details>
 
 ---
 

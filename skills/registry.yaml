@@ -1,5 +1,5 @@
-# AgentKit Skill Registry
-# Master list of all available skills.
+# AgentKit Skill Registry v0.5.0
+# 50 skills across 12 categories with role bundle tags.
 # Fields:
 #   id             — unique identifier (used in hooks + logs)
 #   name           — human-readable name
@@ -12,6 +12,17 @@
 #   platforms      — list of supported platforms
 #   keywords       — extra keywords to boost this skill's selection score
 #   effectiveness  — 0.0–1.0 (updated from marketplace ratings)
+#   bundles        — role bundles this skill belongs to
+
+# ── Bundles ────────────────────────────────────────────────────────────────────
+# backend-pro      Python/Go backend, REST/gRPC APIs, SQL/NoSQL, auth, devops
+# frontend-wizard  React/Vue/Next.js, CSS, state, a11y, E2E testing
+# full-stack-hero  All 50 skills
+# ai-engineer      LLM prompting, RAG, agents, evals, function calling
+# devops-master    Docker, K8s, CI/CD, Terraform, monitoring, nginx
+# data-scientist   Pandas, ML pipelines, data visualization, SQL
+# mobile-dev       React Native, Flutter, REST APIs, auth
+# ──────────────────────────────────────────────────────────────────────────────
 
 skills:
 
@@ -27,6 +38,7 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [python, traceback, exception, AttributeError, TypeError, KeyError, ImportError]
     effectiveness: 0.92
+    bundles: [backend-pro, full-stack-hero, ai-engineer, data-scientist]
 
   - id: debugging-js
     name: JavaScript / TypeScript Debugger
@@ -39,6 +51,33 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [javascript, typescript, node, undefined, cannot read, is not a function, NaN]
     effectiveness: 0.89
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: go-debugger
+    name: Go Debugger
+    category: debugging
+    priority: 1
+    path: skills/debugging/go-debugger.md
+    level1_tokens: 46
+    level2_tokens: 490
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [go, golang, nil pointer, goroutine, panic, race condition, delve, pprof]
+    effectiveness: 0.88
+    bundles: [backend-pro, full-stack-hero]
+
+  - id: network-debugger
+    name: Network & HTTP Debugger
+    category: debugging
+    priority: 2
+    path: skills/debugging/network-debugger.md
+    level1_tokens: 44
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [http, cors, dns, tls, ssl, timeout, curl, network, 503, 502, connection refused]
+    effectiveness: 0.85
+    bundles: [backend-pro, full-stack-hero, devops-master]
 
   # ── Testing ──────────────────────────────────────────────────────────────
   - id: tdd-workflow
@@ -52,6 +91,7 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [tdd, test driven, red green refactor, write test first]
     effectiveness: 0.88
+    bundles: [backend-pro, frontend-wizard, full-stack-hero, ai-engineer, data-scientist]
 
   - id: jest-testing
     name: Jest / Vitest Testing
@@ -64,6 +104,59 @@ skills:
     platforms: [claude-code, cursor, codex]
     keywords: [jest, vitest, describe, it, expect, beforeEach, afterEach, mock, spy]
     effectiveness: 0.85
+    bundles: [frontend-wizard, full-stack-hero, mobile-dev]
+
+  - id: pytest-workflow
+    name: Pytest Workflow
+    category: writing-tests
+    priority: 1
+    path: skills/testing/pytest-workflow.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [pytest, fixture, conftest, parametrize, mock, monkeypatch, coverage, pytest-asyncio]
+    effectiveness: 0.90
+    bundles: [backend-pro, full-stack-hero, ai-engineer, data-scientist]
+
+  - id: cypress-e2e
+    name: Cypress E2E Testing
+    category: writing-tests
+    priority: 2
+    path: skills/testing/cypress-e2e.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex]
+    keywords: [cypress, e2e, end to end, cy.get, cy.click, intercept, fixture, data-cy]
+    effectiveness: 0.84
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: playwright-testing
+    name: Playwright Testing
+    category: writing-tests
+    priority: 2
+    path: skills/testing/playwright-testing.md
+    level1_tokens: 45
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex]
+    keywords: [playwright, page.goto, locator, screenshot, trace, browser, e2e, page object]
+    effectiveness: 0.86
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: contract-testing
+    name: Contract Testing (Pact)
+    category: writing-tests
+    priority: 2
+    path: skills/testing/contract-testing.md
+    level1_tokens: 42
+    level2_tokens: 450
+    level3_tokens: 1850
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [pact, contract test, consumer driven, provider, pact broker, integration testing]
+    effectiveness: 0.82
+    bundles: [backend-pro, full-stack-hero]
 
   # ── API Work ─────────────────────────────────────────────────────────────
   - id: rest-api
@@ -77,6 +170,7 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [rest, endpoint, http, status code, get, post, put, patch, delete]
     effectiveness: 0.87
+    bundles: [backend-pro, full-stack-hero, ai-engineer, mobile-dev]
 
   - id: graphql
     name: GraphQL Expert
@@ -89,6 +183,46 @@ skills:
     platforms: [claude-code, cursor, codex]
     keywords: [graphql, query, mutation, subscription, resolver, schema, type]
     effectiveness: 0.84
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: grpc
+    name: gRPC & Protobuf Expert
+    category: api-work
+    priority: 2
+    path: skills/api/grpc.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [grpc, protobuf, proto, rpc, streaming, service definition, buf, deadlines]
+    effectiveness: 0.83
+    bundles: [backend-pro, full-stack-hero]
+
+  - id: openapi-design
+    name: OpenAPI Design Expert
+    category: api-work
+    priority: 2
+    path: skills/api/openapi-design.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [openapi, swagger, spec, yaml, components, schema, bearer, oauth2, api-generator]
+    effectiveness: 0.85
+    bundles: [backend-pro, full-stack-hero]
+
+  - id: webhook-design
+    name: Webhook Design Expert
+    category: api-work
+    priority: 2
+    path: skills/api/webhook-design.md
+    level1_tokens: 43
+    level2_tokens: 450
+    level3_tokens: 1850
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [webhook, hmac, signature, idempotency, retry, backoff, event, ngrok, delivery]
+    effectiveness: 0.83
+    bundles: [backend-pro, full-stack-hero]
 
   # ── Database ─────────────────────────────────────────────────────────────
   - id: sql-query
@@ -102,6 +236,7 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [sql, query, select, join, index, postgres, mysql, sqlite]
     effectiveness: 0.90
+    bundles: [backend-pro, full-stack-hero, devops-master, data-scientist]
 
   - id: prisma-orm
     name: Prisma ORM Expert
@@ -114,6 +249,46 @@ skills:
     platforms: [claude-code, cursor, codex]
     keywords: [prisma, schema.prisma, migrate, relation, model, generate]
     effectiveness: 0.88
+    bundles: [backend-pro, frontend-wizard, full-stack-hero]
+
+  - id: mongodb
+    name: MongoDB Expert
+    category: db-work
+    priority: 2
+    path: skills/db/mongodb.md
+    level1_tokens: 45
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [mongodb, mongo, aggregation, bson, atlas, mongoose, document, collection, pipeline]
+    effectiveness: 0.85
+    bundles: [backend-pro, full-stack-hero]
+
+  - id: redis-caching
+    name: Redis Caching Expert
+    category: db-work
+    priority: 2
+    path: skills/db/redis-caching.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [redis, cache, caching, ttl, pub/sub, sorted set, hash, eviction, ioredis, redis-py]
+    effectiveness: 0.86
+    bundles: [backend-pro, full-stack-hero]
+
+  - id: database-migrations
+    name: Database Migrations Expert
+    category: db-work
+    priority: 2
+    path: skills/db/database-migrations.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [migration, alembic, flyway, liquibase, knex, zero downtime, expand contract, rollback, ddl]
+    effectiveness: 0.84
+    bundles: [backend-pro, full-stack-hero]
 
   # ── UI / Frontend ─────────────────────────────────────────────────────────
   - id: react-patterns
@@ -127,6 +302,72 @@ skills:
     platforms: [claude-code, cursor, codex]
     keywords: [react, component, hook, useState, useEffect, props, context, jsx, tsx]
     effectiveness: 0.86
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: nextjs-patterns
+    name: Next.js Expert
+    category: designing-ui
+    priority: 1
+    path: skills/ui/nextjs-patterns.md
+    level1_tokens: 48
+    level2_tokens: 500
+    level3_tokens: 2050
+    platforms: [claude-code, cursor, codex]
+    keywords: [nextjs, next.js, app router, server component, client component, server action, getServerSideProps, layout]
+    effectiveness: 0.87
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: css-layout
+    name: CSS Layout Expert (Flexbox/Grid/Tailwind)
+    category: designing-ui
+    priority: 1
+    path: skills/ui/css-layout.md
+    level1_tokens: 45
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [css, flexbox, grid, tailwind, responsive, breakpoint, centering, dark mode, layout]
+    effectiveness: 0.85
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: vue-patterns
+    name: Vue.js Expert
+    category: designing-ui
+    priority: 2
+    path: skills/ui/vue-patterns.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex]
+    keywords: [vue, vuejs, composition api, ref, reactive, computed, watch, pinia, vue router, script setup]
+    effectiveness: 0.84
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: state-management
+    name: State Management Expert
+    category: designing-ui
+    priority: 2
+    path: skills/ui/state-management.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex]
+    keywords: [redux, zustand, jotai, recoil, rtk query, react query, global state, store, slice, atom]
+    effectiveness: 0.84
+    bundles: [frontend-wizard, full-stack-hero]
+
+  - id: accessibility
+    name: Web Accessibility (a11y) Expert
+    category: designing-ui
+    priority: 2
+    path: skills/ui/accessibility.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [accessibility, a11y, wcag, aria, screen reader, keyboard navigation, contrast, semantic html]
+    effectiveness: 0.83
+    bundles: [frontend-wizard, full-stack-hero]
 
   # ── DevOps ────────────────────────────────────────────────────────────────
   - id: docker
@@ -140,6 +381,72 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [docker, dockerfile, container, image, compose, volume, network]
     effectiveness: 0.91
+    bundles: [backend-pro, full-stack-hero, devops-master]
+
+  - id: kubernetes
+    name: Kubernetes Expert
+    category: deploying
+    priority: 1
+    path: skills/devops/kubernetes.md
+    level1_tokens: 48
+    level2_tokens: 500
+    level3_tokens: 2100
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [kubernetes, k8s, pod, deployment, service, configmap, secret, helm, hpa, ingress, kubectl]
+    effectiveness: 0.88
+    bundles: [devops-master, full-stack-hero]
+
+  - id: github-actions
+    name: GitHub Actions Expert
+    category: deploying
+    priority: 1
+    path: skills/devops/github-actions.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [github actions, workflow, ci, cd, pipeline, yaml, matrix, secrets, runner, job, step]
+    effectiveness: 0.89
+    bundles: [devops-master, full-stack-hero, backend-pro]
+
+  - id: terraform
+    name: Terraform Expert
+    category: deploying
+    priority: 2
+    path: skills/devops/terraform.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [terraform, infrastructure as code, iac, provider, resource, module, state, plan, apply, aws, gcp]
+    effectiveness: 0.87
+    bundles: [devops-master, full-stack-hero]
+
+  - id: monitoring-observability
+    name: Monitoring & Observability Expert
+    category: deploying
+    priority: 2
+    path: skills/devops/monitoring-observability.md
+    level1_tokens: 45
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [monitoring, observability, prometheus, grafana, opentelemetry, tracing, logging, alerting, slo, sli]
+    effectiveness: 0.86
+    bundles: [devops-master, full-stack-hero]
+
+  - id: nginx-config
+    name: Nginx Configuration Expert
+    category: deploying
+    priority: 2
+    path: skills/devops/nginx-config.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [nginx, reverse proxy, server block, location, ssl, tls, rate limit, gzip, load balance]
+    effectiveness: 0.85
+    bundles: [devops-master, full-stack-hero, backend-pro]
 
   # ── Security ──────────────────────────────────────────────────────────────
   - id: auth-jwt
@@ -153,6 +460,46 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [jwt, auth, token, oauth, session, bcrypt, password, refresh token]
     effectiveness: 0.93
+    bundles: [backend-pro, full-stack-hero, mobile-dev]
+
+  - id: owasp-top10
+    name: OWASP Top 10 Security Expert
+    category: security
+    priority: 1
+    path: skills/security/owasp-top10.md
+    level1_tokens: 48
+    level2_tokens: 500
+    level3_tokens: 2100
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [owasp, sql injection, xss, idor, csrf, security misconfiguration, vulnerable component, ssrf, injection]
+    effectiveness: 0.91
+    bundles: [backend-pro, full-stack-hero]
+
+  - id: secrets-management
+    name: Secrets Management Expert
+    category: security
+    priority: 1
+    path: skills/security/secrets-management.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [secrets, vault, aws secrets manager, gcp secret manager, env, credential, rotation, leaked, gitguardian]
+    effectiveness: 0.90
+    bundles: [backend-pro, full-stack-hero, devops-master]
+
+  - id: api-security
+    name: API Security Expert
+    category: security
+    priority: 2
+    path: skills/security/api-security.md
+    level1_tokens: 45
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [api security, rate limiting, input validation, cors, api key, oauth scope, ssrf, sanitize]
+    effectiveness: 0.88
+    bundles: [backend-pro, full-stack-hero]
 
   # ── Refactoring ───────────────────────────────────────────────────────────
   - id: clean-code
@@ -166,6 +513,46 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [refactor, clean, dry, solid, extract, rename, simplify, technical debt]
     effectiveness: 0.85
+    bundles: [backend-pro, frontend-wizard, full-stack-hero, ai-engineer]
+
+  - id: performance-optimization
+    name: Performance Optimization Expert
+    category: refactoring
+    priority: 2
+    path: skills/refactoring/performance-optimization.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [performance, profiling, n+1, slow query, memory leak, bundle size, lazy load, cache, benchmark]
+    effectiveness: 0.87
+    bundles: [backend-pro, frontend-wizard, full-stack-hero]
+
+  - id: code-review
+    name: Code Review Expert
+    category: refactoring
+    priority: 2
+    path: skills/refactoring/code-review.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [code review, pr review, pull request, review feedback, reviewer, review checklist]
+    effectiveness: 0.85
+    bundles: [backend-pro, frontend-wizard, full-stack-hero]
+
+  - id: legacy-modernization
+    name: Legacy Code Modernization Expert
+    category: refactoring
+    priority: 2
+    path: skills/refactoring/legacy-modernization.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [legacy, strangler fig, monolith, rewrite, modernize, characterization test, incremental, refactor]
+    effectiveness: 0.84
+    bundles: [backend-pro, full-stack-hero]
 
   # ── AI Engineering ────────────────────────────────────────────────────────
   - id: llm-prompting
@@ -179,3 +566,123 @@ skills:
     platforms: [claude-code, cursor, codex, gemini-cli]
     keywords: [llm, prompt, claude, openai, system prompt, few-shot, chain of thought, token]
     effectiveness: 0.89
+    bundles: [ai-engineer, full-stack-hero]
+
+  - id: rag-pipeline
+    name: RAG Pipeline Expert
+    category: ai-engineering
+    priority: 1
+    path: skills/ai-engineering/rag-pipeline.md
+    level1_tokens: 48
+    level2_tokens: 500
+    level3_tokens: 2100
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [rag, retrieval augmented, vector store, embedding, pgvector, pinecone, chroma, chunking, reranking, hybrid search]
+    effectiveness: 0.88
+    bundles: [ai-engineer, full-stack-hero]
+
+  - id: function-calling
+    name: Function Calling / Tool Use Expert
+    category: ai-engineering
+    priority: 1
+    path: skills/ai-engineering/function-calling.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [function calling, tool use, tool schema, parallel tools, tool choice, openai tools, claude tools]
+    effectiveness: 0.87
+    bundles: [ai-engineer, full-stack-hero]
+
+  - id: agent-design
+    name: AI Agent Design Expert
+    category: ai-engineering
+    priority: 1
+    path: skills/ai-engineering/agent-design.md
+    level1_tokens: 47
+    level2_tokens: 490
+    level3_tokens: 2050
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [agent, agentic, react pattern, agent loop, multi-agent, orchestration, guardrails, subagent, memory]
+    effectiveness: 0.88
+    bundles: [ai-engineer, full-stack-hero]
+
+  - id: eval-testing
+    name: LLM Eval & Testing Expert
+    category: ai-engineering
+    priority: 2
+    path: skills/ai-engineering/eval-testing.md
+    level1_tokens: 45
+    level2_tokens: 470
+    level3_tokens: 1950
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [eval, llm eval, promptfoo, braintrust, ragas, llm judge, benchmark, regression, assertion eval]
+    effectiveness: 0.85
+    bundles: [ai-engineer, full-stack-hero]
+
+  # ── Data Science ──────────────────────────────────────────────────────────
+  - id: pandas-workflow
+    name: Pandas Data Workflow Expert
+    category: data-work
+    priority: 1
+    path: skills/data/pandas-workflow.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [pandas, dataframe, groupby, merge, pivot, csv, parquet, dtype, vectorized, method chain]
+    effectiveness: 0.89
+    bundles: [data-scientist, full-stack-hero]
+
+  - id: data-visualization
+    name: Data Visualization Expert
+    category: data-work
+    priority: 2
+    path: skills/data/data-visualization.md
+    level1_tokens: 44
+    level2_tokens: 460
+    level3_tokens: 1900
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [matplotlib, seaborn, plotly, chart, visualization, dashboard, streamlit, bar chart, scatter, histogram]
+    effectiveness: 0.85
+    bundles: [data-scientist, full-stack-hero]
+
+  - id: ml-pipeline
+    name: ML Pipeline Expert
+    category: data-work
+    priority: 2
+    path: skills/data/ml-pipeline.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex, gemini-cli]
+    keywords: [sklearn, scikit-learn, pipeline, cross validation, train test split, feature engineering, hyperparameter, optuna, model evaluation]
+    effectiveness: 0.87
+    bundles: [data-scientist, full-stack-hero]
+
+  # ── Mobile ────────────────────────────────────────────────────────────────
+  - id: react-native
+    name: React Native Expert
+    category: mobile
+    priority: 1
+    path: skills/mobile/react-native.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex]
+    keywords: [react native, expo, flatlist, stylesheet, navigation, react navigation, platform.os, flipper, mobile]
+    effectiveness: 0.85
+    bundles: [mobile-dev, full-stack-hero]
+
+  - id: flutter
+    name: Flutter Expert
+    category: mobile
+    priority: 1
+    path: skills/mobile/flutter.md
+    level1_tokens: 46
+    level2_tokens: 480
+    level3_tokens: 2000
+    platforms: [claude-code, cursor, codex]
+    keywords: [flutter, dart, widget, stateless, stateful, provider, riverpod, bloc, go_router, pub.dev, hot reload]
+    effectiveness: 0.85
+    bundles: [mobile-dev, full-stack-hero]
