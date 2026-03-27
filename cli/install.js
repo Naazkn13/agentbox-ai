@@ -129,7 +129,7 @@ function runPythonInstaller(platformId, skillIds, agentKitHome) {
 function install(options = {}) {
   const agentKitHome = options.agentKitHome
     || process.env.AGENTKIT_HOME
-    || path.join(process.env.HOME || "~", ".agentkit");
+    || path.join(__dirname, "..");
 
   const silent = options.silent || false;
 

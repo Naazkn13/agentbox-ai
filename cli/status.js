@@ -13,7 +13,7 @@ const { detectPlatforms } = require("./detect-platform");
 function status(options = {}) {
   const agentKitHome = options.agentKitHome
     || process.env.AGENTKIT_HOME
-    || path.join(process.env.HOME || "~", ".agentkit");
+    || path.join(__dirname, "..");
 
   const cwd = process.cwd();
 

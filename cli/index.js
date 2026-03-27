@@ -27,8 +27,9 @@ const { status }           = require("./status");
 const { costs }            = require("./costs");
 const { listSkills, skillInfo } = require("./skills");
 
+// Package root: where skills/, hooks/, router/, etc. live (the npm install dir)
 const AGENTKIT_HOME = process.env.AGENTKIT_HOME
-  || path.join(process.env.HOME || "~", ".agentkit");
+  || path.join(__dirname, "..");
 
 // ---------------------------------------------------------------------------
 // Argument parsing (no external deps — works via npx without install)
@@ -130,7 +131,7 @@ switch (cmd) {
 
 function printHelp() {
   console.log(`
-AgentKit v0.4.0 — Intelligent orchestration for agentic coding
+AgentKit v0.5.0 — Intelligent orchestration for agentic coding
 
 Usage: npx agentkit <command> [options]
 
@@ -153,7 +154,7 @@ Options:
   --days <N>        Days for cost report (default: 7)
 
 Environment:
-  AGENTKIT_HOME     Path to AgentKit installation (default: ~/.agentkit)
+  AGENTKIT_HOME     Override package root (default: npm install directory)
   AGENTKIT_PROJECT  Project root for workflow state (default: cwd)
 `);
 }
