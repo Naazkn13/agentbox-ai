@@ -117,20 +117,27 @@ def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3"
             entry["matcher"] = matcher
         buckets.append(entry)
 
+    import platform as _platform
+    is_windows = _platform.system() == "Windows"
+
+    # Python hooks work on all platforms
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/spawn_hook.py")
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/skill_router_hook.py")
-    _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/session_start.sh")
-    _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/memory_inject.sh")
-    _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/model_router_hook.sh")
-    _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/thinking_budget.sh")
-    _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/workflow_state.sh")
-    _ensure_hook("PreToolUse",  "Edit|Write|MultiEdit", f"bash {H}/hooks/forced_eval.sh")
-    _ensure_hook("PreToolUse",  "Edit|Write|MultiEdit", f"bash {H}/hooks/plan_gate.sh")
-    _ensure_hook("PostToolUse", "Read",                 f"bash {H}/hooks/research_gate.sh")
-    _ensure_hook("PostToolUse", "Read|Edit|Write|Bash|MultiEdit", f"bash {H}/hooks/memory_recorder.sh")
-    _ensure_hook("PostToolUse", "Read|Edit|Write|Bash|MultiEdit", f"bash {H}/hooks/cost_dashboard.sh")
-    _ensure_hook("PostToolUse", "Edit|Write|MultiEdit", f"bash {H}/hooks/quality_gates.sh")
-    _ensure_hook("Stop",        None,                   f"bash {H}/hooks/session_end.sh")
+
+    # Bash hooks only work on Mac/Linux — skip on Windows (no native bash)
+    if not is_windows:
+        _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/session_start.sh")
+        _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/memory_inject.sh")
+        _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/model_router_hook.sh")
+        _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/thinking_budget.sh")
+        _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/workflow_state.sh")
+        _ensure_hook("PreToolUse",  "Edit|Write|MultiEdit", f"bash {H}/hooks/forced_eval.sh")
+        _ensure_hook("PreToolUse",  "Edit|Write|MultiEdit", f"bash {H}/hooks/plan_gate.sh")
+        _ensure_hook("PostToolUse", "Read",                 f"bash {H}/hooks/research_gate.sh")
+        _ensure_hook("PostToolUse", "Read|Edit|Write|Bash|MultiEdit", f"bash {H}/hooks/memory_recorder.sh")
+        _ensure_hook("PostToolUse", "Read|Edit|Write|Bash|MultiEdit", f"bash {H}/hooks/cost_dashboard.sh")
+        _ensure_hook("PostToolUse", "Edit|Write|MultiEdit", f"bash {H}/hooks/quality_gates.sh")
+        _ensure_hook("Stop",        None,                   f"bash {H}/hooks/session_end.sh")
 
     return settings
 
