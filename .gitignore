@@ -12,3 +12,5 @@ node_modules/
 *.tgz
 .npm/
 npm-debug.log*
+logs.txt
+.claude/

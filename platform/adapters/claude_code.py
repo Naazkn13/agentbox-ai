@@ -58,12 +58,15 @@ class ClaudeCodeAdapter(PlatformAdapter):
             dest.write_text(skill.content)
             result.files_written.append(str(dest))
 
-        # 2. Merge hooks into .claude/settings.json
-        settings_path = self.project_root / ".claude" / "settings.json"
+        # 2. Merge hooks into the GLOBAL ~/.claude/settings.json so they fire
+        #    in every project, not just the directory where `npx agentkit init`
+        #    was run.  (Project-level .claude/settings.json only applies inside
+        #    that one directory — the root cause of the "hooks don't fire"  bug.)
+        global_settings_path = Path.home() / ".claude" / "settings.json"
         settings = {}
-        if settings_path.exists():
+        if global_settings_path.exists():
             try:
-                settings = json.loads(settings_path.read_text())
+                settings = json.loads(global_settings_path.read_text())
             except Exception:
                 pass
 
@@ -72,9 +75,9 @@ class ClaudeCodeAdapter(PlatformAdapter):
             Path(__file__).parent.parent.parent.resolve()
         )
         settings = _merge_hooks(settings, agentkit_home, config.python_cmd)
-        settings_path.parent.mkdir(parents=True, exist_ok=True)
-        settings_path.write_text(json.dumps(settings, indent=2))
-        result.files_written.append(str(settings_path))
+        global_settings_path.parent.mkdir(parents=True, exist_ok=True)
+        global_settings_path.write_text(json.dumps(settings, indent=2))
+        result.files_written.append(str(global_settings_path))
 
         # 3. Write .agentkit.yaml config
         config_path = self.project_root / ".agentkit.yaml"
