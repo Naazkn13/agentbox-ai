@@ -1,38 +1,41 @@
 {
-  "_comment": "AgentKit Claude Code settings template. Copy relevant sections into your .claude/settings.json",
-  "_agentkit_version": "0.5.4",
+  "_comment": "AgentKit reference template — DO NOT copy this file manually. Run `npx agentkit init` instead. Claude Code does NOT expand ${VAR} in hook commands — only absolute paths work.",
+  "_agentkit_version": "0.5.9",
+
+  "_usage": "Run `npx agentkit init` — it writes absolute paths into ~/.claude/settings.json automatically.",
 
   "hooks": {
+    "_note": "Replace /ABSOLUTE/PATH/TO/agentkit with the actual install path. Run `npx agentkit init` to do this automatically.",
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${AGENTKIT_HOME}/hooks/spawn_hook.py"
+            "command": "python3 /ABSOLUTE/PATH/TO/agentkit/hooks/spawn_hook.py"
           },
           {
             "type": "command",
-            "command": "python3 ${AGENTKIT_HOME}/hooks/skill_router_hook.py"
+            "command": "python3 /ABSOLUTE/PATH/TO/agentkit/hooks/skill_router_hook.py"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/session_start.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/session_start.sh"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/memory_inject.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/memory_inject.sh"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/model_router_hook.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/model_router_hook.sh"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/thinking_budget.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/thinking_budget.sh"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/workflow_state.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/workflow_state.sh"
           }
         ]
       }
@@ -43,11 +46,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/forced_eval.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/forced_eval.sh"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/plan_gate.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/plan_gate.sh"
           }
         ]
       }
@@ -58,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/research_gate.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/research_gate.sh"
           }
         ]
       },
@@ -67,11 +70,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/memory_recorder.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/memory_recorder.sh"
           },
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/cost_dashboard.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/cost_dashboard.sh"
           }
         ]
       },
@@ -80,7 +83,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/quality_gates.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/quality_gates.sh"
           }
         ]
       }
@@ -90,19 +93,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${AGENTKIT_HOME}/hooks/session_end.sh"
+            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/session_end.sh"
           }
         ]
       }
     ]
-  },
-
-  "_notes": {
-    "AGENTKIT_HOME": "Set this env var to the absolute path of your AgentKit install dir",
-    "UserPromptSubmit": "Skill router + session handoff + memory + model router + thinking budget + workflow state",
-    "PreToolUse (Edit)": "Forced-eval + plan gate — blocks coding without an approved plan",
-    "PostToolUse (Read)": "Research gate — tracks file reads for RESEARCH→PLAN transition",
-    "PostToolUse (Edit)": "Memory + cost dashboard + quality gates (syntax/lint/types/tests)",
-    "Stop": "Session end — compresses session into handoff document via Haiku"
   }
 }

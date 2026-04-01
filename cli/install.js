@@ -152,7 +152,7 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.9");
+  log("\nAgentKit Installer v0.5.10");
   log("─────────────────────────\n");
 
   // 1. Check Python is available (required for platform adapters)
@@ -218,7 +218,10 @@ function install(options = {}) {
     for (const r of succeeded) {
       log(`  ${r.platform}: installed`);
     }
-    log("\n  Estimated savings:");
+    log("\n  Hooks registered in: ~/.claude/settings.json (global)");
+    log("  AgentKit will activate automatically in every Claude Code session.");
+    log("  No @agentkit tag needed.\n");
+    log("  Estimated savings:");
     log("    Tokens:  ~40,000 → ~5,000/session (89% reduction)");
     log("    Cost:    ~70% reduction vs default all-Sonnet\n");
     log("  To use the agentkit command globally:");
