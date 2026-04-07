@@ -115,10 +115,14 @@ AgentKit is a 6-layer runtime that sits between your prompts and the model:
 
 AgentKit ships a native **TUI plugin** for [OpenCode](https://opencode.ai) that lives inside the terminal UI — not just in the system prompt.
 
+![AgentKit active as a named agent in OpenCode](Agentkit_master.png)
+
 ### What you get
 
 | Feature | Detail |
 |---------|--------|
+| **AgentKit agent persona** | `agentkit ⚡` appears in OpenCode's agent list — press `tab` to switch to it |
+| **Active agent label** | Status bar shows `Agentkit` in orange when selected |
 | **Startup toast** | `⚡ AgentKit v0.5.x Active — 54 skills loaded` appears on every launch |
 | **`/agentkit`** | Status command — shows version, skill count, session cost |
 | **`/agentkit-task`** | Pre-fills the prompt with `@agentkit-task:` — type your task and press Enter |
@@ -126,32 +130,41 @@ AgentKit ships a native **TUI plugin** for [OpenCode](https://opencode.ai) that 
 | **`/ak`** | Alias for `/agentkit` |
 | **`/ak-task`** | Alias for `/agentkit-task` |
 
+### The AgentKit Agent Persona
+
+After install, AgentKit registers itself as a named agent in OpenCode's agent switcher. Press **`tab`** → select **`agentkit ⚡`** to activate it. Once active, the status bar shows `Agentkit` in orange — you're now running with full AgentKit skill-routing and workflow enforcement on every message.
+
+![AgentKit selected as active agent in OpenCode](AgentKit_Opencode.png)
+
 ### Install (new users)
 
 ```bash
 npx agentkit-ai@latest init
 ```
 
-AgentKit auto-detects OpenCode and installs everything — system prompt injection, TUI plugin registration, and slash commands. Restart OpenCode after running init.
+AgentKit auto-detects OpenCode and installs everything — system prompt injection, TUI plugin, slash commands, and the agent persona. Restart OpenCode after running init.
 
 ### Update (existing AgentKit users)
-
-If you installed AgentKit before v0.5.15, run:
 
 ```bash
 npm install -g agentkit-ai@latest
 agentkit init
 ```
 
-Then **restart OpenCode**. The new plugin will show a startup toast and register `/agentkit-task` in the command palette (`ctrl+p`).
+Then **restart OpenCode**. If you installed before v0.5.18, this adds the agent persona to the `tab` → agents switcher.
 
 ### How to assign a task
 
-1. Press `ctrl+p` inside OpenCode to open the command palette
-2. Type `/agentkit-task` and select it
-3. The prompt box pre-fills with `@agentkit-task: `
-4. Type your task after the prefix and press **Enter**
-5. OpenCode starts a new session with your task immediately
+**Option A — via agent + prompt (recommended):**
+1. Press `tab` → select `agentkit ⚡`
+2. Type your task directly and press **Enter**
+
+**Option B — via slash command:**
+1. Press `ctrl+p` → type `/agentkit-task` → select it
+2. The prompt pre-fills with `@agentkit-task: `
+3. Type your task after the prefix and press **Enter**
+
+Both options activate the full AgentKit workflow: Research → Plan → Execute → Review → Ship.
 
 ### Manual plugin install (optional)
 
