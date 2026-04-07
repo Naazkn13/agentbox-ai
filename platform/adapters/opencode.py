@@ -99,12 +99,37 @@ class OpenCodeAdapter(PlatformAdapter):
         self._install_opencode_plugin(plugin_path, result)
         # Ensure the plugin is NOT in opencode.jsonc (server config) — remove if present
         self._remove_plugin_from_server_config()
+        # Create the AgentKit agent persona file so it appears in "Select agent" (tab → agents)
+        self._install_agent_file(len(skills), result)
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
 
         global_config.write_text(json.dumps(cfg, indent=2))
         result.files_written.append(str(global_config))
         return result
+
+    def _install_agent_file(self, skill_count: int, result: InstallResult) -> None:
+        """Create ~/.config/opencode/agent/agentkit.md so AgentKit appears in 'Select agent'."""
+        agent_dir = Path.home() / ".config" / "opencode" / "agent"
+        agent_file = agent_dir / "agentkit.md"
+        try:
+            agent_dir.mkdir(parents=True, exist_ok=True)
+            content = (
+                "---\n"
+                'description: "⚡ AgentKit — AI with pre-loaded skills for efficient coding"\n'
+                "mode: primary\n"
+                'color: "#f59e0b"\n'
+                "---\n\n"
+                f"You are running with AgentKit active ({skill_count} skills loaded). "
+                "AgentKit has pre-loaded optimized skills for your session. "
+                "Follow the skill instructions in the system prompt exactly. "
+                "When assigned a task via @agentkit-task:, run `agentkit workflow transition RESEARCH` "
+                "immediately, then follow the Research → Plan → Execute → Review → Ship workflow.\n"
+            )
+            agent_file.write_text(content)
+            result.files_written.append(str(agent_file))
+        except Exception:
+            pass  # Non-fatal — agent persona is optional
 
     def _remove_plugin_from_server_config(self) -> None:
         """Remove the TUI plugin from opencode.jsonc to prevent double-loading."""
@@ -267,5 +292,14 @@ class OpenCodeAdapter(PlatformAdapter):
                 result.files_written.append(str(global_config))
             except Exception as e:
                 result.error = str(e)
+
+        # Remove agent persona file
+        agent_file = Path.home() / ".config" / "opencode" / "agent" / "agentkit.md"
+        try:
+            if agent_file.exists():
+                agent_file.unlink()
+                result.files_written.append(str(agent_file))
+        except Exception:
+            pass
 
         return result
