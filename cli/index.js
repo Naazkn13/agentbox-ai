@@ -28,6 +28,7 @@ const { status }           = require("./status");
 const { costs }            = require("./costs");
 const { listSkills, skillInfo } = require("./skills");
 const { uninstall } = require("./uninstall");
+const { analytics } = require("./analytics");
 
 // Package root: where skills/, hooks/, router/, etc. live (the npm install dir)
 const AGENTKIT_HOME = process.env.AGENTKIT_HOME
@@ -94,6 +95,13 @@ switch (cmd) {
     });
     break;
 
+  case "analytics":
+    analytics({
+      agentKitHome: AGENTKIT_HOME,
+      days:         parseInt(flags.days || "7", 10),
+    });
+    break;
+
   case "skills":
     if (sub === "list" || !sub) {
       listSkills({ agentKitHome: AGENTKIT_HOME });
@@ -151,6 +159,7 @@ Commands:
   sync              Re-sync config across all detected platforms
   status            Health check + installed platforms + costs
   costs             Cost analytics (--days N, default 7)
+  analytics         Full usage analytics dashboard (--days N, default 7)
   skills list       List all installed skills
   skills info <id>  Show details for a skill
   workflow status   Show current workflow state

@@ -18,8 +18,10 @@ from platform.adapter import (
     register,
 )
 
-AGENTKIT_MARKER = "<!-- AGENTKIT_START -->"
-AGENTKIT_END = "<!-- AGENTKIT_END -->"
+AGENTKIT_MARKER     = "<!-- AGENTKIT_START -->"
+AGENTKIT_END        = "<!-- AGENTKIT_END -->"
+ANALYTICS_MARKER    = "<!-- AGENTKIT_ANALYTICS_START -->"
+ANALYTICS_END       = "<!-- AGENTKIT_ANALYTICS_END -->"
 
 
 @register
@@ -70,13 +72,32 @@ class OpenCodeAdapter(PlatformAdapter):
             flags=re.DOTALL,
         ).strip()
 
-        cfg["system_prompt"] = (existing_prompt + "\n\n" + skills_prompt).strip()
+        # Inject analytics summary
+        analytics_block = self._build_analytics_block()
+        final_prompt = (existing_prompt + "\n\n" + skills_prompt + "\n\n" + analytics_block).strip()
+        cfg["system_prompt"] = final_prompt
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
 
         global_config.write_text(json.dumps(cfg, indent=2))
         result.files_written.append(str(global_config))
         return result
+
+    def _build_analytics_block(self) -> str:
+        try:
+            import subprocess
+            import sys
+            agentkit_home = str(Path(__file__).parent.parent.parent)
+            result = subprocess.run(
+                [sys.executable, str(Path(agentkit_home) / "hooks" / "render_dashboard.py"),
+                 "analytics-md", "--days", "7"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                return result.stdout.strip()
+        except Exception:
+            pass
+        return f"{ANALYTICS_MARKER}\n## AgentKit Analytics\nRun `agentkit analytics` in terminal.\n{ANALYTICS_END}"
 
     def uninstall(self) -> InstallResult:
         result = InstallResult(platform=self.PLATFORM_ID, success=True)
@@ -92,6 +113,12 @@ class OpenCodeAdapter(PlatformAdapter):
                     re.escape(AGENTKIT_MARKER) + r".*?" + re.escape(AGENTKIT_END),
                     "",
                     existing_prompt,
+                    flags=re.DOTALL,
+                )
+                cleaned = re.sub(
+                    re.escape(ANALYTICS_MARKER) + r".*?" + re.escape(ANALYTICS_END),
+                    "",
+                    cleaned,
                     flags=re.DOTALL,
                 ).strip()
                 cfg["system_prompt"] = cleaned
