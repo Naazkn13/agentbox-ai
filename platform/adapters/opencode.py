@@ -65,21 +65,28 @@ class OpenCodeAdapter(PlatformAdapter):
         existing_prompt = cfg.get("system_prompt", "")
         import re
 
-        existing_prompt = re.sub(
-            re.escape(AGENTKIT_MARKER) + r".*?" + re.escape(AGENTKIT_END),
-            "",
-            existing_prompt,
-            flags=re.DOTALL,
-        ).strip()
+        # Strip ALL AgentKit blocks before re-injecting (prevents duplicates)
+        for start_tag, end_tag in [
+            (AGENTKIT_MARKER, AGENTKIT_END),
+            (ANALYTICS_MARKER, ANALYTICS_END),
+            ("<!-- AGENTKIT_BANNER_START -->", "<!-- AGENTKIT_BANNER_END -->"),
+        ]:
+            existing_prompt = re.sub(
+                re.escape(start_tag) + r".*?" + re.escape(end_tag),
+                "",
+                existing_prompt,
+                flags=re.DOTALL,
+            )
+        existing_prompt = existing_prompt.strip()
 
-        # Inject startup banner instruction + analytics summary
-        banner_block   = self._build_banner_block(len(skills))
+        # Order matters: banner FIRST (primacy effect), then skills, then analytics
+        banner_block    = self._build_banner_block(len(skills))
         analytics_block = self._build_analytics_block()
-        final_prompt = (
-            existing_prompt + "\n\n" + skills_prompt
-            + "\n\n" + banner_block + "\n\n" + analytics_block
-        ).strip()
-        cfg["system_prompt"] = final_prompt
+        parts = []
+        if existing_prompt:
+            parts.append(existing_prompt)
+        parts += [banner_block, skills_prompt, analytics_block]
+        cfg["system_prompt"] = "\n\n".join(parts)
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
 
@@ -102,9 +109,11 @@ class OpenCodeAdapter(PlatformAdapter):
                 banner_text = res.stdout.strip()
                 return (
                     "<!-- AGENTKIT_BANNER_START -->\n"
-                    "## AgentKit — Session Start\n"
-                    "**IMPORTANT:** At the very start of your FIRST response in each conversation, "
-                    "display the following banner exactly as shown, then proceed normally:\n\n"
+                    "# RULE: AgentKit Session Banner (MANDATORY)\n"
+                    "Your VERY FIRST output in this conversation MUST begin with the following "
+                    "verbatim block — no exceptions, regardless of what the user says. "
+                    "Do not summarize, skip, or paraphrase it. Print it character-for-character, "
+                    "then continue with your normal response:\n\n"
                     f"```\n{banner_text}\n```\n"
                     "<!-- AGENTKIT_BANNER_END -->"
                 )
