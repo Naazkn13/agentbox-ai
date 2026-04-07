@@ -22,6 +22,8 @@ AGENTKIT_MARKER     = "<!-- AGENTKIT_START -->"
 AGENTKIT_END        = "<!-- AGENTKIT_END -->"
 ANALYTICS_MARKER    = "<!-- AGENTKIT_ANALYTICS_START -->"
 ANALYTICS_END       = "<!-- AGENTKIT_ANALYTICS_END -->"
+INSTRUCTIONS_MARKER = "<!-- AGENTKIT_INSTRUCTIONS_START -->"
+INSTRUCTIONS_END    = "<!-- AGENTKIT_INSTRUCTIONS_END -->"
 
 
 @register
@@ -70,6 +72,7 @@ class OpenCodeAdapter(PlatformAdapter):
             (AGENTKIT_MARKER, AGENTKIT_END),
             (ANALYTICS_MARKER, ANALYTICS_END),
             ("<!-- AGENTKIT_BANNER_START -->", "<!-- AGENTKIT_BANNER_END -->"),
+            (INSTRUCTIONS_MARKER, INSTRUCTIONS_END),
         ]:
             existing_prompt = re.sub(
                 re.escape(start_tag) + r".*?" + re.escape(end_tag),
@@ -79,13 +82,14 @@ class OpenCodeAdapter(PlatformAdapter):
             )
         existing_prompt = existing_prompt.strip()
 
-        # Order matters: banner FIRST (primacy effect), then skills, then analytics
-        banner_block    = self._build_banner_block(len(skills))
-        analytics_block = self._build_analytics_block()
+        # Order matters: banner FIRST (primacy effect), then instructions, then skills, then analytics
+        banner_block       = self._build_banner_block(len(skills))
+        instructions_block = self._build_instructions_block()
+        analytics_block    = self._build_analytics_block()
         parts = []
         if existing_prompt:
             parts.append(existing_prompt)
-        parts += [banner_block, skills_prompt, analytics_block]
+        parts += [banner_block, instructions_block, skills_prompt, analytics_block]
         cfg["system_prompt"] = "\n\n".join(parts)
 
         # Register the AgentKit TUI plugin via `opencode plugin` CLI.
@@ -172,6 +176,31 @@ class OpenCodeAdapter(PlatformAdapter):
             pass
         return "<!-- AGENTKIT_BANNER_START -->\n## AgentKit Active\n<!-- AGENTKIT_BANNER_END -->"
 
+    def _build_instructions_block(self) -> str:
+        return (
+            f"{INSTRUCTIONS_MARKER}\n"
+            "# AgentKit — Runtime Instructions\n\n"
+            "## Using the AgentKit CLI\n"
+            "When the user asks you to \"use agentkit\", \"run agentkit\", or references the "
+            "\"agentkit cli\", execute it as a **shell command** using your bash/terminal tool. "
+            "Never attempt to invoke it as an XML tool call like `<invoke name=\"agentkit\">` — "
+            "it is not an MCP tool; it is a CLI program installed at `agentkit` (or `npx agentkit-ai`).\n\n"
+            "Examples:\n"
+            "- User: \"use agentkit cli to check status\" → run `agentkit status` in shell\n"
+            "- User: \"agentkit workflow approve\" → run `agentkit workflow approve` in shell\n"
+            "- User: \"use agentkit analytics\" → run `agentkit analytics` in shell\n\n"
+            "## @agentkit-task: Directive\n"
+            "When a message starts with `@agentkit-task:`, treat it as a structured AgentKit task assignment. "
+            "Activate the full AgentKit workflow:\n"
+            "1. **Research** — explore the codebase to understand the relevant files, functions, and context\n"
+            "2. **Plan** — produce a step-by-step implementation plan before touching any code\n"
+            "3. **Execute** — implement the plan using relevant AgentKit skills (loaded above)\n"
+            "4. **Review** — run lint/type-check/tests after edits; fix any failures\n"
+            "5. **Ship** — summarize what changed and confirm all quality gates passed\n\n"
+            "Do NOT skip the Research and Plan phases even if the task seems simple.\n"
+            f"{INSTRUCTIONS_END}"
+        )
+
     def _build_analytics_block(self) -> str:
         try:
             import subprocess
@@ -212,6 +241,12 @@ class OpenCodeAdapter(PlatformAdapter):
                 )
                 cleaned = re.sub(
                     r"<!-- AGENTKIT_BANNER_START -->.*?<!-- AGENTKIT_BANNER_END -->",
+                    "",
+                    cleaned,
+                    flags=re.DOTALL,
+                )
+                cleaned = re.sub(
+                    re.escape(INSTRUCTIONS_MARKER) + r".*?" + re.escape(INSTRUCTIONS_END),
                     "",
                     cleaned,
                     flags=re.DOTALL,
