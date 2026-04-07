@@ -100,7 +100,7 @@ AgentKit is a 6-layer runtime that sits between your prompts and the model:
 | ![Cursor](https://img.shields.io/badge/Cursor-Tier_2_Partial-6366F1) | Skills + model routing rules | `.cursor/rules/*.mdc` |
 | ![Gemini CLI](https://img.shields.io/badge/Gemini_CLI-Tier_2_Partial-4285F4) | Skills via system prompt | `.gemini/GEMINI.md` |
 | ![Windsurf](https://img.shields.io/badge/Windsurf-Tier_2_Partial-06B6D4) | Skills via Cascade rules | `.windsurf/rules.md` |
-| ![OpenCode](https://img.shields.io/badge/OpenCode-Tier_2_Partial-8B5CF6) | Skills via config | `.opencode/config.json` |
+| ![OpenCode](https://img.shields.io/badge/OpenCode-Tier_2_Full-8B5CF6) | Skills + native TUI plugin + slash commands | System prompt + TUI plugin |
 | ![Kilo Code](https://img.shields.io/badge/Kilo_Code-Tier_2_Partial-EC4899) | Skills as plugins | `.kilo/plugins/*.yaml` |
 | ![Codex CLI](https://img.shields.io/badge/Codex_CLI-Tier_3_Basic-6B7280) | Skills injected | `AGENTS.md` |
 | ![Aider](https://img.shields.io/badge/Aider-Tier_3_Basic-6B7280) | Skills as conventions | `.aider.conf.yml` |
@@ -108,6 +108,60 @@ AgentKit is a 6-layer runtime that sits between your prompts and the model:
 | ![Antigravity](https://img.shields.io/badge/Antigravity-Tier_1_Full-D97706) | Full plugin system | `.antigravity/plugins/` |
 
 **Ruflo:** AgentKit makes your Ruflo swarms 3× cheaper by routing worker agents to Haiku and injecting only relevant skills per agent. [See issue #1 →](https://github.com/Ajaysable123/AgentKit/issues/1)
+
+---
+
+## OpenCode Integration
+
+AgentKit ships a native **TUI plugin** for [OpenCode](https://opencode.ai) that lives inside the terminal UI — not just in the system prompt.
+
+### What you get
+
+| Feature | Detail |
+|---------|--------|
+| **Startup toast** | `⚡ AgentKit v0.5.x Active — 54 skills loaded` appears on every launch |
+| **`/agentkit`** | Status command — shows version, skill count, session cost |
+| **`/agentkit-task`** | Pre-fills the prompt with `@agentkit-task:` — type your task and press Enter |
+| **`/agentkit-analytics`** | Shows cost & usage info |
+| **`/ak`** | Alias for `/agentkit` |
+| **`/ak-task`** | Alias for `/agentkit-task` |
+
+### Install (new users)
+
+```bash
+npx agentkit-ai@latest init
+```
+
+AgentKit auto-detects OpenCode and installs everything — system prompt injection, TUI plugin registration, and slash commands. Restart OpenCode after running init.
+
+### Update (existing AgentKit users)
+
+If you installed AgentKit before v0.5.15, run:
+
+```bash
+npm install -g agentkit-ai@latest
+agentkit init
+```
+
+Then **restart OpenCode**. The new plugin will show a startup toast and register `/agentkit-task` in the command palette (`ctrl+p`).
+
+### How to assign a task
+
+1. Press `ctrl+p` inside OpenCode to open the command palette
+2. Type `/agentkit-task` and select it
+3. The prompt box pre-fills with `@agentkit-task: `
+4. Type your task after the prefix and press **Enter**
+5. OpenCode starts a new session with your task immediately
+
+### Manual plugin install (optional)
+
+If auto-detection misses OpenCode, register the plugin directly:
+
+```bash
+opencode plugin "/path/to/AgentKit/platform/opencode-plugin" --global --force
+```
+
+Find the path with: `npm root -g agentkit-ai` → append `/platform/opencode-plugin`.
 
 ---
 
@@ -157,10 +211,10 @@ Wave 4 →  reviewer   (sonnet-4.6)    Final code review             [waits: wri
 
 **Without global install** (use `npx agentkit-ai <command>`):
 ```bash
-npx agentkit-ai@latest init    # First install
-npx agentkit-ai sync           # Re-sync after adding skills
-npx agentkit-ai status         # Health check + cost summary
-npx agentkit-ai costs --days 7 # Weekly cost analytics
+npx agentkit-ai@latest init      # First install / update
+npx agentkit-ai sync             # Re-sync after adding skills
+npx agentkit-ai status           # Health check + cost summary
+npx agentkit-ai analytics        # Cost & usage dashboard
 ```
 
 **With global install** (`npm install -g agentkit-ai`, then use `agentkit`):
