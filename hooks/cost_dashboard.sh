@@ -37,22 +37,28 @@ usage = d.get('usage', {})
 print(usage.get('output_tokens', 0))
 " 2>/dev/null || echo "0")
 
-# Load model from env vars written by model_router_hook.sh
+# Load model, platform, and active skills from env vars written by model_router_hook.sh
 ENV_FILE="$DATA_DIR/env_${SESSION_ID}.sh"
 MODEL="claude-sonnet-4-6"   # default
+PLATFORM="claude-code"
+SKILLS=""
 if [ -f "$ENV_FILE" ]; then
   # shellcheck disable=SC1090
   source "$ENV_FILE"
   MODEL="${AGENTKIT_MODEL:-claude-sonnet-4-6}"
+  PLATFORM="${AGENTKIT_PLATFORM:-claude-code}"
+  SKILLS="${AGENTKIT_SKILLS:-}"
 fi
 
 # Only log if we have non-zero token counts
 if [ "$INPUT_TOKENS" -gt 0 ] || [ "$OUTPUT_TOKENS" -gt 0 ]; then
   python3 "$AGENTKIT_HOME/hooks/render_dashboard.py" log \
-    --model     "$MODEL" \
-    --input     "$INPUT_TOKENS" \
-    --output    "$OUTPUT_TOKENS" \
+    --model      "$MODEL" \
+    --input      "$INPUT_TOKENS" \
+    --output     "$OUTPUT_TOKENS" \
     --session-id "$SESSION_ID" \
+    --platform   "$PLATFORM" \
+    --skills     "$SKILLS" \
     > /dev/null 2>&1 || true
 fi
 

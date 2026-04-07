@@ -40,7 +40,11 @@ class GeminiCLIAdapter(PlatformAdapter):
 
         # Build system prompt extension
         skills_text = "\n\n".join(self.convert_skill(s) for s in skills)
-        system_prompt = f"## AgentKit — Skill Instructions\n\n{skills_text}"
+        analytics_block = self._build_analytics_block()
+        system_prompt = (
+            f"## AgentKit — Skill Instructions\n\n{skills_text}\n\n"
+            f"{analytics_block}"
+        )
 
         # Write GEMINI.md (system prompt extension file)
         gemini_md = gemini_dir / "GEMINI.md"
@@ -73,3 +77,19 @@ class GeminiCLIAdapter(PlatformAdapter):
         result.files_written.append(str(config_path))
 
         return result
+
+    def _build_analytics_block(self) -> str:
+        try:
+            import subprocess
+            import sys
+            agentkit_home = str(Path(__file__).parent.parent.parent)
+            res = subprocess.run(
+                [sys.executable, str(Path(agentkit_home) / "hooks" / "render_dashboard.py"),
+                 "analytics-md", "--days", "7"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if res.returncode == 0 and res.stdout.strip():
+                return res.stdout.strip()
+        except Exception:
+            pass
+        return "<!-- AGENTKIT_ANALYTICS_START -->\n## AgentKit Analytics\nRun `agentkit analytics` in terminal.\n<!-- AGENTKIT_ANALYTICS_END -->"
