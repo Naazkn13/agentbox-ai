@@ -118,6 +118,7 @@ function runPythonInstaller(platformId, skillIds, agentKitHome, pythonCmd) {
     [
       path.join(agentKitHome, "cli", "installer_bridge.py"),
       "--platform",   platformId,
+      "--action",    "install",
       "--skills",     skillIdsStr,
       "--home",       agentKitHome,
       "--python-cmd", pythonCmd,
