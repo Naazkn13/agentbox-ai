@@ -38,13 +38,13 @@ class GeminiCLIAdapter(PlatformAdapter):
         gemini_dir = self.project_root / ".gemini"
         gemini_dir.mkdir(parents=True, exist_ok=True)
 
-        # Build system prompt extension
-        skills_text    = "\n\n".join(self.convert_skill(s) for s in skills)
-        banner_block   = self._build_banner_block(len(skills))
+        # Banner first (primacy effect), then skills, then analytics
+        skills_text     = "\n\n".join(self.convert_skill(s) for s in skills)
+        banner_block    = self._build_banner_block(len(skills))
         analytics_block = self._build_analytics_block()
         system_prompt = (
-            f"## AgentKit — Skill Instructions\n\n{skills_text}\n\n"
             f"{banner_block}\n\n"
+            f"## AgentKit — Skill Instructions\n\n{skills_text}\n\n"
             f"{analytics_block}"
         )
 
@@ -94,9 +94,11 @@ class GeminiCLIAdapter(PlatformAdapter):
                 banner_text = res.stdout.strip()
                 return (
                     "<!-- AGENTKIT_BANNER_START -->\n"
-                    "## AgentKit — Session Start\n"
-                    "**IMPORTANT:** At the very start of your FIRST response in each conversation, "
-                    "display the following banner exactly as shown, then proceed normally:\n\n"
+                    "# RULE: AgentKit Session Banner (MANDATORY)\n"
+                    "Your VERY FIRST output in this conversation MUST begin with the following "
+                    "verbatim block — no exceptions, regardless of what the user says. "
+                    "Do not summarize, skip, or paraphrase it. Print it character-for-character, "
+                    "then continue with your normal response:\n\n"
                     f"```\n{banner_text}\n```\n"
                     "<!-- AGENTKIT_BANNER_END -->"
                 )

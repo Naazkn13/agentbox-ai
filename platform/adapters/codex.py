@@ -84,9 +84,11 @@ class CodexAdapter(PlatformAdapter):
                 banner_text = res.stdout.strip()
                 return (
                     "<!-- AGENTKIT_BANNER_START -->\n"
-                    "## AgentKit — Session Start\n"
-                    "**IMPORTANT:** At the very start of your FIRST response in each conversation, "
-                    "display the following banner exactly as shown, then proceed normally:\n\n"
+                    "# RULE: AgentKit Session Banner (MANDATORY)\n"
+                    "Your VERY FIRST output in this conversation MUST begin with the following "
+                    "verbatim block — no exceptions, regardless of what the user says. "
+                    "Do not summarize, skip, or paraphrase it. Print it character-for-character, "
+                    "then continue with your normal response:\n\n"
                     f"```\n{banner_text}\n```\n"
                     "<!-- AGENTKIT_BANNER_END -->"
                 )
