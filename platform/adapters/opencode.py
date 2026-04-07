@@ -88,20 +88,33 @@ class OpenCodeAdapter(PlatformAdapter):
         parts += [banner_block, skills_prompt, analytics_block]
         cfg["system_prompt"] = "\n\n".join(parts)
 
-        # Register the AgentKit TUI plugin for in-app toast + /agentkit command
+        # Register the AgentKit TUI plugin via `opencode plugin` CLI
+        # (writing to config JSON alone is not enough — opencode must install it)
         plugin_path = str(Path(__file__).parent.parent / "opencode-plugin")
-        plugin_spec = f"file:{plugin_path}"
-        plugins = cfg.get("plugin", [])
-        # Remove old agentkit plugin entries before re-adding
-        plugins = [p for p in plugins if "agentkit" not in str(p)]
-        plugins.append(plugin_spec)
-        cfg["plugin"] = plugins
+        self._install_opencode_plugin(plugin_path, result)
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
 
         global_config.write_text(json.dumps(cfg, indent=2))
         result.files_written.append(str(global_config))
         return result
+
+    def _install_opencode_plugin(self, plugin_spec: str, result: InstallResult) -> None:
+        """Run `opencode plugin <spec> --global` to properly install the TUI plugin."""
+        import shutil
+        import subprocess
+        opencode_bin = shutil.which("opencode")
+        if not opencode_bin:
+            return
+        try:
+            res = subprocess.run(
+                [opencode_bin, "plugin", plugin_spec, "--global", "--force"],
+                capture_output=True, text=True, timeout=30,
+            )
+            if res.returncode == 0:
+                result.files_written.append(f"opencode plugin: {plugin_spec}")
+        except Exception:
+            pass  # Non-fatal — wrapper still shows the banner
 
     def _build_banner_block(self, skill_count: int = 0) -> str:
         try:
