@@ -10,6 +10,14 @@ const fs   = require("fs");
 const path = require("path");
 const { detectPlatforms, primaryPlatform } = require("./detect-platform");
 
+const PKG_VERSION = (() => {
+  try {
+    return require("../package.json").version;
+  } catch {
+    return "?.?.?";
+  }
+})();
+
 // ---------------------------------------------------------------------------
 // Skill bundles
 // ---------------------------------------------------------------------------
@@ -153,7 +161,7 @@ function install(options = {}) {
 
   function log(...args) { if (!silent) console.log(...args); }
 
-  log("\nAgentKit Installer v0.5.10");
+  log(`\nAgentKit Installer v${PKG_VERSION}`);
   log("─────────────────────────\n");
 
   // 1. Check Python is available (required for platform adapters)

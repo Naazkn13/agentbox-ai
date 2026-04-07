@@ -21,6 +21,10 @@
 
 const path = require("path");
 
+const PKG_VERSION = (() => {
+  try { return require("../package.json").version; } catch { return "?.?.?"; }
+})();
+
 const { detectPlatforms }  = require("./detect-platform");
 const { install, BUNDLES } = require("./install");
 const { sync }             = require("./sync");
@@ -149,7 +153,7 @@ switch (cmd) {
 
 function printHelp() {
   console.log(`
-AgentKit v0.5.9 — Intelligent orchestration for agentic coding
+AgentKit v${PKG_VERSION} — Intelligent orchestration for agentic coding
 
 Usage: npx agentkit <command> [options]
 
