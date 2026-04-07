@@ -121,7 +121,7 @@ switch (cmd) {
     const wcmd = sub || "status";
     const result = spawnSync(
       "python3",
-      [path.join(AGENTKIT_HOME, "workflow", "enforcer.py"), wcmd],
+      [path.join(AGENTKIT_HOME, "workflow", "enforcer.py"), wcmd, ...args.slice(2)],
       { stdio: "inherit", cwd: process.cwd() },
     );
     process.exit(result.status || 0);
