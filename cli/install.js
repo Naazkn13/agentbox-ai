@@ -219,7 +219,16 @@ function install(options = {}) {
     log("");
   }
 
-  // 5. Summary
+  // 5. Install shell wrappers for non-hook platforms (OpenCode, Gemini CLI)
+  const installedIds = results.filter(r => r.success).map(r => r.platform);
+  const shellAliases = [];
+  if (installedIds.includes("opencode")) {
+    const wrapperPath = path.join(agentKitHome, "cli", "opencode-wrapper.sh");
+    shellAliases.push({ name: "opencode", wrapper: wrapperPath });
+    _writeShellAlias("opencode", wrapperPath, agentKitHome);
+  }
+
+  // 6. Summary
   const succeeded = results.filter(r => r.success);
   log("──────────────────────────────────────────────────");
   if (succeeded.length > 0) {
@@ -230,20 +239,50 @@ function install(options = {}) {
     log("\n  Hooks registered in: ~/.claude/settings.json (global)");
     log("  AgentKit will activate automatically in every Claude Code session.");
     log("  No @agentkit tag needed.\n");
+    if (shellAliases.length > 0) {
+      log("  Shell wrappers installed (banner on launch):");
+      for (const a of shellAliases) {
+        log(`    alias ${a.name} → agentkit-wrapper`);
+      }
+      log("  Reload your shell: source ~/.zshrc  (or ~/.bashrc)\n");
+    }
     log("  Estimated savings:");
     log("    Tokens:  ~40,000 → ~5,000/session (89% reduction)");
     log("    Cost:    ~70% reduction vs default all-Sonnet\n");
     log("  To use the agentkit command globally:");
     log("    npm install -g agentkit-ai\n");
     log("  Then run:");
-    log("    agentkit status   → view real-time stats");
-    log("    agentkit costs    → view cost analytics");
+    log("    agentkit status     → view real-time stats");
+    log("    agentkit analytics  → usage dashboard");
   } else {
     log("✗ Installation failed for all platforms.");
   }
   log("──────────────────────────────────────────────────\n");
 
   return { success: succeeded.length > 0, platforms: results };
+}
+
+/**
+ * Write an alias to ~/.zshrc and ~/.bashrc so the platform launcher
+ * prints the AgentKit banner before starting the tool.
+ */
+function _writeShellAlias(cmdName, wrapperPath, agentKitHome) {
+  const os   = require("os");
+  const home = os.homedir();
+  const marker = `# AGENTKIT_ALIAS_${cmdName.toUpperCase()}`;
+  const aliasLine = `alias ${cmdName}='AGENTKIT_HOME="${agentKitHome}" bash "${wrapperPath}"'`;
+  const block = `\n${marker}\n${aliasLine}\n`;
+
+  for (const rcFile of [".zshrc", ".bashrc"]) {
+    const rcPath = path.join(home, rcFile);
+    if (!fs.existsSync(rcPath)) continue;
+    let content = fs.readFileSync(rcPath, "utf8");
+    // Remove old block if present
+    const oldBlockRe = new RegExp(`\\n?${marker}\\n.*\\n`, "g");
+    content = content.replace(oldBlockRe, "");
+    // Append new block
+    fs.writeFileSync(rcPath, content + block, "utf8");
+  }
 }
 
 module.exports = { install, BUNDLES };
