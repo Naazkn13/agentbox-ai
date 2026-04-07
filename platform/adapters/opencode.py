@@ -88,16 +88,45 @@ class OpenCodeAdapter(PlatformAdapter):
         parts += [banner_block, skills_prompt, analytics_block]
         cfg["system_prompt"] = "\n\n".join(parts)
 
-        # Register the AgentKit TUI plugin via `opencode plugin` CLI
-        # (writing to config JSON alone is not enough — opencode must install it)
+        # Register the AgentKit TUI plugin via `opencode plugin` CLI.
+        # This writes only to tui.jsonc (not opencode.jsonc) — loading it from
+        # opencode.jsonc as well would cause duplicate command registration.
         plugin_path = str(Path(__file__).parent.parent / "opencode-plugin")
         self._install_opencode_plugin(plugin_path, result)
+        # Ensure the plugin is NOT in opencode.jsonc (server config) — remove if present
+        self._remove_plugin_from_server_config()
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
 
         global_config.write_text(json.dumps(cfg, indent=2))
         result.files_written.append(str(global_config))
         return result
+
+    def _remove_plugin_from_server_config(self) -> None:
+        """Remove the TUI plugin from opencode.jsonc to prevent double-loading."""
+        import json as _json
+        server_cfg = Path.home() / ".config" / "opencode" / "opencode.jsonc"
+        if not server_cfg.exists():
+            return
+        try:
+            raw = server_cfg.read_text()
+            # Strip // comments before parsing
+            import re
+            clean = re.sub(r"//.*", "", raw)
+            cfg = _json.loads(clean)
+            if "plugin" not in cfg:
+                return
+            before = len(cfg["plugin"])
+            cfg["plugin"] = [
+                p for p in cfg["plugin"]
+                if "opencode-plugin" not in str(p)
+            ]
+            if len(cfg["plugin"]) != before:
+                if not cfg["plugin"]:
+                    del cfg["plugin"]
+                server_cfg.write_text(_json.dumps(cfg, indent=2))
+        except Exception:
+            pass
 
     def _install_opencode_plugin(self, plugin_spec: str, result: InstallResult) -> None:
         """Run `opencode plugin <spec> --global` to properly install the TUI plugin."""
