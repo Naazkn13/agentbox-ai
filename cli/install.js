@@ -244,7 +244,7 @@ function install(options = {}) {
       for (const a of shellAliases) {
         log(`    alias ${a.name} → agentkit-wrapper`);
       }
-      log("  Reload your shell: source ~/.zshrc  (or ~/.bashrc)\n");
+      log("  Reload your shell: source ~/.zprofile  (or ~/.zshrc / ~/.bashrc)\n");
     }
     log("  Estimated savings:");
     log("    Tokens:  ~40,000 → ~5,000/session (89% reduction)");
@@ -273,15 +273,27 @@ function _writeShellAlias(cmdName, wrapperPath, agentKitHome) {
   const aliasLine = `alias ${cmdName}='AGENTKIT_HOME="${agentKitHome}" bash "${wrapperPath}"'`;
   const block = `\n${marker}\n${aliasLine}\n`;
 
-  for (const rcFile of [".zshrc", ".bashrc"]) {
+  // Determine which shell config files to write to.
+  // Priority: existing files first, then create ~/.zshrc if on zsh.
+  const candidates = [".zshrc", ".zprofile", ".bashrc", ".bash_profile"];
+  let written = false;
+
+  for (const rcFile of candidates) {
     const rcPath = path.join(home, rcFile);
     if (!fs.existsSync(rcPath)) continue;
     let content = fs.readFileSync(rcPath, "utf8");
-    // Remove old block if present
     const oldBlockRe = new RegExp(`\\n?${marker}\\n.*\\n`, "g");
     content = content.replace(oldBlockRe, "");
-    // Append new block
     fs.writeFileSync(rcPath, content + block, "utf8");
+    written = true;
+    // Write to both zsh and bash variants if found
+    if (!rcFile.startsWith(".z") && !rcFile.startsWith(".b")) break;
+  }
+
+  // If no rc file exists yet, create ~/.zshrc (zsh is default on macOS)
+  if (!written) {
+    const zshrc = path.join(home, ".zshrc");
+    fs.writeFileSync(zshrc, `# Created by AgentKit installer\n${block}`, "utf8");
   }
 }
 
