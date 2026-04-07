@@ -1,0 +1,17 @@
+---
+description: For Dockerfiles, docker-compose, containers, images, and networking
+globs: **/*
+alwaysApply: false
+---
+
+# Docker Expert
+
+## Docker — Core Instructions
+
+1. **Multi-stage builds** to keep production images small — build stage (with dev tools) → runtime stage (minimal).
+2. **`.dockerignore` always** — exclude `node_modules`, `.git`, `.env`, build outputs.
+3. **Pin base image versions** — `node:20-alpine` not `node:latest`. Reproducible builds.
+4. **Non-root user in production** — `USER node` or create a dedicated user. Never run containers as root.
+5. **Layer caching:** copy `package.json` + install deps BEFORE copying source code. Deps change less often.
+6. **Healthchecks in compose** — `healthcheck` ensures dependent services wait for readiness, not just startup.
+7. **Never bake secrets into images** — use environment variables or Docker secrets, not `ARG`/`ENV` for passwords.

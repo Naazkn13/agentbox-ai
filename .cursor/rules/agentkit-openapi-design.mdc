@@ -1,0 +1,17 @@
+---
+description: For designing OpenAPI 3.x specs — paths, schemas, auth, status codes, and client generation
+globs: **/*
+alwaysApply: false
+---
+
+# OpenAPI Design Expert
+
+## OpenAPI Design — Core Instructions
+
+1. **Use OpenAPI 3.x (not Swagger 2.0):** declare `openapi: "3.1.0"` and use `components/schemas` for all reusable models — never inline complex schemas twice.
+2. **Define all reusable types in components:** schemas, parameters, responses, request bodies, and security schemes all belong under `components`, then referenced with `$ref`.
+3. **Every response must have a schema:** document 2xx, 4xx, and 5xx responses for every operation — do not leave responses undocumented.
+4. **Use `required` arrays and `nullable` explicitly:** be exact about which fields are required and which can be null; never leave it ambiguous.
+5. **Apply security at the global level, override per-operation:** set a global `security` block, then override individual operations (e.g., login endpoint has empty `security: []`).
+6. **Use `operationId` on every endpoint:** name it `verbNoun` (e.g., `createUser`, `listOrders`) — this drives generated SDK method names.
+7. **Validate the spec before committing:** run `npx @redocly/cli lint openapi.yaml` or `npx swagger-parser validate` in CI to catch broken `$ref`s and schema errors early.

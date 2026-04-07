@@ -1,0 +1,17 @@
+---
+description: For Nginx server blocks, reverse proxy, SSL/TLS, rate limiting, gzip, security headers
+globs: **/*
+alwaysApply: false
+---
+
+# Nginx Configuration Expert
+
+## Nginx Configuration Expert — Core Instructions
+
+1. **Test every config change with `nginx -t` before reloading** — syntax errors will prevent reload and leave the running config unchanged, but a bad config after a full restart will take the server down.
+2. **Use `location` specificity rules correctly** — exact match (`=`) beats prefix (`^~`) beats regex (`~`/`~*`) beats longest prefix; unexpected routing bugs are almost always a specificity mistake.
+3. **Terminate SSL at Nginx, never pass raw HTTPS upstream** — use `proxy_pass http://` to your backend over internal network; only the Nginx-to-client leg should be HTTPS.
+4. **Set `proxy_set_header` for every reverse-proxied backend** — at minimum: `Host`, `X-Real-IP`, `X-Forwarded-For`, and `X-Forwarded-Proto`; backends need these to construct correct URLs and log real IPs.
+5. **Define rate limit zones in the `http` block, not `server` or `location`** — `limit_req_zone` is a declaration; `limit_req` is the enforcement; splitting them across includes is a common misconfiguration.
+6. **Enable `gzip` only for compressible MIME types** — never gzip images, video, or already-compressed formats; always set `gzip_vary on` so CDNs cache the correct version.
+7. **Reload with `nginx -s reload` (graceful), not restart** — reload drains active connections; restart drops them; use restart only when upgrading the Nginx binary itself.

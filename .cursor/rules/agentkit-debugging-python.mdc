@@ -1,0 +1,17 @@
+---
+description: For Python errors, exceptions, and tracebacks
+globs: **/*.py,**/*.ts,**/*.js,**/*.go,**/*.rs
+alwaysApply: false
+---
+
+# Python Debugger
+
+## Python Debugger — Core Instructions
+
+1. **Read the full traceback top-to-bottom** before touching any code. The root cause is rarely at the last line shown.
+2. **Identify root cause, not symptoms.** Check variable state at the actual error line, not just where it surfaces.
+3. **Use targeted logging** — `print(f"DEBUG: {var=}")` right before the failing line. Confirm your assumption before fixing.
+4. **Check for None before attribute access.** 90% of AttributeErrors are None objects.
+5. **Never suppress exceptions** with bare `except: pass`. Log at minimum: `except Exception as e: logger.error(e)`.
+6. **Reproduce the original error first** after fixing — confirm you understood it before moving on.
+7. **One change at a time.** Don't batch fixes — you won't know which one worked.

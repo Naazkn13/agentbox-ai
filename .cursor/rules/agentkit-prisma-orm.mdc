@@ -1,0 +1,17 @@
+---
+description: For Prisma schema, migrations, relations, and query patterns
+globs: **/*
+alwaysApply: false
+---
+
+# Prisma ORM Expert
+
+## Prisma — Core Instructions
+
+1. **Run `prisma generate` after every schema change** — the client won't reflect your changes otherwise.
+2. **Use `prisma migrate dev` in development**, `prisma migrate deploy` in production — never use `db push` in production.
+3. **Optional relations:** use `?` on the field type (`User?`) and include the foreign key field explicitly.
+4. **N+1 fix:** use `include` to eager-load relations in a single query, not nested `findUnique` calls.
+5. **Transactions for multi-step writes:** use `prisma.$transaction([...])` or interactive transactions.
+6. **Rollback a migration:** `prisma migrate resolve --rolled-back <migration_name>` then fix and re-run.
+7. **Never edit migration files** after they've been applied — create a new migration instead.

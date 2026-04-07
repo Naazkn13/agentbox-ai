@@ -8,17 +8,22 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import sys
 from pathlib import Path
 
 from platform.adapter import (
-    AgentKitConfig, InstallResult, PlatformAdapter,
-    Skill, extract_level, register,
+    AgentKitConfig,
+    InstallResult,
+    PlatformAdapter,
+    Skill,
+    extract_level,
+    register,
 )
 
 
 @register
 class ClaudeCodeAdapter(PlatformAdapter):
-    PLATFORM_ID   = "claude-code"
+    PLATFORM_ID = "claude-code"
     PLATFORM_NAME = "Claude Code"
     TIER = 1
 
@@ -28,6 +33,7 @@ class ClaudeCodeAdapter(PlatformAdapter):
 
     def detect(self) -> bool:
         import shutil as sh
+
         home = Path.home()
         return (
             (home / ".claude").exists()
@@ -40,7 +46,7 @@ class ClaudeCodeAdapter(PlatformAdapter):
     # ------------------------------------------------------------------
 
     def convert_skill(self, skill: Skill) -> str:
-        return skill.content   # SKILL.md is the native format
+        return skill.content  # SKILL.md is the native format
 
     # ------------------------------------------------------------------
     # Install
@@ -54,7 +60,7 @@ class ClaudeCodeAdapter(PlatformAdapter):
         for skill in skills:
             dest_dir = skills_dir / skill.category
             dest_dir.mkdir(parents=True, exist_ok=True)
-            dest = dest_dir / f"{skill.id}.md"   # unique per skill, not shared SKILL.md
+            dest = dest_dir / f"{skill.id}.md"  # unique per skill, not shared SKILL.md
             dest.write_text(skill.content)
             result.files_written.append(str(dest))
 
@@ -71,8 +77,10 @@ class ClaudeCodeAdapter(PlatformAdapter):
                 pass
 
         # Resolve package root: prefer explicit config, then env var, then relative to this file
-        agentkit_home = config.agentkit_home or os.environ.get("AGENTKIT_HOME") or str(
-            Path(__file__).parent.parent.parent.resolve()
+        agentkit_home = (
+            config.agentkit_home
+            or os.environ.get("AGENTKIT_HOME")
+            or str(Path(__file__).parent.parent.parent.resolve())
         )
         settings = _merge_hooks(settings, agentkit_home, config.python_cmd)
         global_settings_path.parent.mkdir(parents=True, exist_ok=True)
@@ -91,7 +99,10 @@ class ClaudeCodeAdapter(PlatformAdapter):
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3") -> dict:
+
+def _merge_hooks(
+    settings: dict, agentkit_home: str, python_cmd: str = "python3"
+) -> dict:
     """Merge AgentKit hooks into existing settings.json without clobbering."""
     from pathlib import Path as _Path
 
@@ -104,7 +115,7 @@ def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3"
 
     def _ensure_hook(event: str, matcher: str | None, command: str) -> None:
         """Add hook if no existing hook references the same script filename."""
-        script = command.split("/")[-1]   # e.g. "spawn_hook.py"
+        script = command.split("/")[-1]  # e.g. "spawn_hook.py"
         buckets = hooks.setdefault(event, [])
         for bucket in buckets:
             for h in bucket.get("hooks", []):
@@ -120,8 +131,7 @@ def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3"
             entry["matcher"] = matcher
         buckets.append(entry)
 
-    import platform as _platform
-    is_windows = _platform.system() == "Windows"
+    is_windows = sys.platform == "win32"
 
     # Python hooks work on all platforms
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/spawn_hook.py")
@@ -134,13 +144,27 @@ def _merge_hooks(settings: dict, agentkit_home: str, python_cmd: str = "python3"
         _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/model_router_hook.sh")
         _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/thinking_budget.sh")
         _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/workflow_state.sh")
-        _ensure_hook("PreToolUse",  "Edit|Write|MultiEdit", f"bash {H}/hooks/forced_eval.sh")
-        _ensure_hook("PreToolUse",  "Edit|Write|MultiEdit", f"bash {H}/hooks/plan_gate.sh")
-        _ensure_hook("PostToolUse", "Read",                 f"bash {H}/hooks/research_gate.sh")
-        _ensure_hook("PostToolUse", "Read|Edit|Write|Bash|MultiEdit", f"bash {H}/hooks/memory_recorder.sh")
-        _ensure_hook("PostToolUse", "Read|Edit|Write|Bash|MultiEdit", f"bash {H}/hooks/cost_dashboard.sh")
-        _ensure_hook("PostToolUse", "Edit|Write|MultiEdit", f"bash {H}/hooks/quality_gates.sh")
-        _ensure_hook("Stop",        None,                   f"bash {H}/hooks/session_end.sh")
+        _ensure_hook(
+            "PreToolUse", "Edit|Write|MultiEdit", f"bash {H}/hooks/forced_eval.sh"
+        )
+        _ensure_hook(
+            "PreToolUse", "Edit|Write|MultiEdit", f"bash {H}/hooks/plan_gate.sh"
+        )
+        _ensure_hook("PostToolUse", "Read", f"bash {H}/hooks/research_gate.sh")
+        _ensure_hook(
+            "PostToolUse",
+            "Read|Edit|Write|Bash|MultiEdit",
+            f"bash {H}/hooks/memory_recorder.sh",
+        )
+        _ensure_hook(
+            "PostToolUse",
+            "Read|Edit|Write|Bash|MultiEdit",
+            f"bash {H}/hooks/cost_dashboard.sh",
+        )
+        _ensure_hook(
+            "PostToolUse", "Edit|Write|MultiEdit", f"bash {H}/hooks/quality_gates.sh"
+        )
+        _ensure_hook("Stop", None, f"bash {H}/hooks/session_end.sh")
 
     return settings
 
