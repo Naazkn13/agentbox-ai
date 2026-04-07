@@ -169,6 +169,7 @@ Commands:
   workflow status   Show current workflow state
   workflow approve  Approve the current implementation plan
   workflow reset    Reset workflow to IDLE (start fresh)
+  workflow complete Complete task and reset to IDLE (for analysis/research tasks)
   detect            Show detected AI coding platforms
   bundles           List available skill bundles
 

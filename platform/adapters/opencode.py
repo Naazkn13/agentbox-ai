@@ -263,6 +263,7 @@ class OpenCodeAdapter(PlatformAdapter):
             "- NEVER run `cd <agentkit-package-dir> && python3 workflow/enforcer.py ...` — this writes state to the wrong location\n"
             "- `edits_count` will show 0 in OpenCode (no hooks) — this is expected; proceed normally\n"
             "- `agentkit workflow status` after each transition to confirm the state changed\n"
+            "- For **analysis/research tasks** (no code edits), use `agentkit workflow complete` instead of trying to transition REVIEW → SHIP. This closes the workflow cleanly regardless of gates.\n"
             f"{INSTRUCTIONS_END}"
         )
 
