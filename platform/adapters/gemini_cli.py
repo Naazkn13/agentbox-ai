@@ -39,10 +39,12 @@ class GeminiCLIAdapter(PlatformAdapter):
         gemini_dir.mkdir(parents=True, exist_ok=True)
 
         # Build system prompt extension
-        skills_text = "\n\n".join(self.convert_skill(s) for s in skills)
+        skills_text    = "\n\n".join(self.convert_skill(s) for s in skills)
+        banner_block   = self._build_banner_block(len(skills))
         analytics_block = self._build_analytics_block()
         system_prompt = (
             f"## AgentKit — Skill Instructions\n\n{skills_text}\n\n"
+            f"{banner_block}\n\n"
             f"{analytics_block}"
         )
 
@@ -77,6 +79,30 @@ class GeminiCLIAdapter(PlatformAdapter):
         result.files_written.append(str(config_path))
 
         return result
+
+    def _build_banner_block(self, skill_count: int = 0) -> str:
+        try:
+            import subprocess
+            import sys
+            agentkit_home = str(Path(__file__).parent.parent.parent)
+            res = subprocess.run(
+                [sys.executable, str(Path(agentkit_home) / "hooks" / "render_dashboard.py"),
+                 "banner", "--platform", self.PLATFORM_ID, "--skill-count", str(skill_count)],
+                capture_output=True, text=True, timeout=10,
+            )
+            if res.returncode == 0 and res.stdout.strip():
+                banner_text = res.stdout.strip()
+                return (
+                    "<!-- AGENTKIT_BANNER_START -->\n"
+                    "## AgentKit — Session Start\n"
+                    "**IMPORTANT:** At the very start of your FIRST response in each conversation, "
+                    "display the following banner exactly as shown, then proceed normally:\n\n"
+                    f"```\n{banner_text}\n```\n"
+                    "<!-- AGENTKIT_BANNER_END -->"
+                )
+        except Exception:
+            pass
+        return "<!-- AGENTKIT_BANNER_START -->\n## AgentKit Active\n<!-- AGENTKIT_BANNER_END -->"
 
     def _build_analytics_block(self) -> str:
         try:
