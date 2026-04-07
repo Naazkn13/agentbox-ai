@@ -160,6 +160,23 @@ class WorkflowEnforcer:
         if self.plan_file.exists():
             self.plan_file.unlink()
 
+    def complete_task(self) -> str:
+        """Close out any task cleanly — for analysis/research tasks with no code edits."""
+        ctx = self._load()
+        summary = (
+            f"Task complete.\n"
+            f"  State was   : {ctx.state}\n"
+            f"  Files read  : {ctx.files_read_count}\n"
+            f"  Edits made  : {ctx.edits_count}\n"
+            f"  Plan existed: {'yes' if ctx.plan_exists else 'no'}\n"
+            f"Workflow reset to IDLE."
+        )
+        new_ctx = WorkflowContext()
+        self._save(new_ctx)
+        if self.plan_file.exists():
+            self.plan_file.unlink()
+        return summary
+
     # ------------------------------------------------------------------
     # Event handlers (called by hooks)
     # ------------------------------------------------------------------
@@ -262,9 +279,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AgentKit workflow enforcer")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    sub.add_parser("status",  help="Show current workflow state")
-    sub.add_parser("approve", help="Approve the current plan")
-    sub.add_parser("reset",   help="Reset workflow to IDLE")
+    sub.add_parser("status",   help="Show current workflow state")
+    sub.add_parser("approve",  help="Approve the current plan")
+    sub.add_parser("reset",    help="Reset workflow to IDLE")
+    sub.add_parser("complete", help="Complete task and reset to IDLE (for analysis/research tasks)")
 
     p_trans = sub.add_parser("transition", help="Attempt a state transition")
     p_trans.add_argument("to_state", choices=STATES)
@@ -290,6 +308,9 @@ if __name__ == "__main__":
     elif args.cmd == "reset":
         enforcer.reset()
         print("Workflow reset to IDLE.")
+
+    elif args.cmd == "complete":
+        print(enforcer.complete_task())
 
     elif args.cmd == "transition":
         ok, msg = enforcer.transition(args.to_state, force=args.force)
