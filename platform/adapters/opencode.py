@@ -87,6 +87,15 @@ class OpenCodeAdapter(PlatformAdapter):
             parts.append(existing_prompt)
         parts += [banner_block, skills_prompt, analytics_block]
         cfg["system_prompt"] = "\n\n".join(parts)
+
+        # Register the AgentKit TUI plugin for in-app toast + /agentkit command
+        plugin_path = str(Path(__file__).parent.parent / "opencode-plugin")
+        plugin_spec = f"file:{plugin_path}"
+        plugins = cfg.get("plugin", [])
+        # Remove old agentkit plugin entries before re-adding
+        plugins = [p for p in plugins if "agentkit" not in str(p)]
+        plugins.append(plugin_spec)
+        cfg["plugin"] = plugins
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
 
