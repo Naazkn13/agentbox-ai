@@ -2,9 +2,9 @@
   "name": "agentkit-opencode",
   "version": "0.5.14",
   "type": "module",
-  "main": "./index.mjs",
   "exports": {
-    ".": "./index.mjs"
+    ".": "./index.mjs",
+    "./tui": "./index.mjs"
   },
   "description": "AgentKit plugin for OpenCode — startup toast, /agentkit command, system prompt injection"
 }
