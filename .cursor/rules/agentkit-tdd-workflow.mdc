@@ -1,0 +1,17 @@
+---
+description: For test-driven development — write tests before implementation
+globs: **/*
+alwaysApply: false
+---
+
+# TDD Workflow
+
+## TDD Workflow — Core Instructions
+
+1. **Red first:** write a failing test that describes the behaviour you want. Run it — confirm it fails for the right reason.
+2. **Green minimal:** write the *simplest possible* code that makes the test pass. No extras.
+3. **Refactor:** now clean up the implementation. Tests stay green throughout.
+4. **One behaviour per test.** A test with multiple unrelated assertions is a hidden integration test.
+5. **Name tests as sentences:** `it('returns 401 when token is expired')` not `it('works')`.
+6. **Test behaviour, not implementation.** Don't test private methods or internal state — test outputs and side effects.
+7. **Arrange-Act-Assert (AAA):** structure every test clearly with setup, the action, and the assertion.

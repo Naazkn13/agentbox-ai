@@ -1,0 +1,17 @@
+---
+description: For designing and implementing REST APIs — routes, status codes, error handling
+globs: **/*
+alwaysApply: false
+---
+
+# REST API Design
+
+## REST API — Core Instructions
+
+1. **Use correct HTTP methods:** GET (read), POST (create), PUT (full replace), PATCH (partial update), DELETE (remove).
+2. **Return correct status codes:** 200 (ok), 201 (created), 204 (no content), 400 (bad request), 401 (unauthenticated), 403 (forbidden), 404 (not found), 409 (conflict), 422 (validation error), 500 (server error).
+3. **Consistent error format:** always return `{ "error": "message", "code": "MACHINE_READABLE_CODE" }`.
+4. **Validate at the boundary:** validate and sanitize all input before it touches business logic.
+5. **Never expose internal errors** to clients — log the full error server-side, return a generic message.
+6. **Resource URLs are nouns, not verbs:** `/users/123` not `/getUser?id=123`.
+7. **Pagination on all list endpoints:** default `limit=20`, max `limit=100`. Return `{ data: [], total, page, limit }`.

@@ -1,0 +1,17 @@
+---
+description: For SQL injection, XSS, IDOR, broken auth, security misconfiguration, vulnerable components, and SSRF
+globs: **/auth/**,**/middleware/**,**/*.env*
+alwaysApply: false
+---
+
+# OWASP Top 10 Security Expert
+
+## OWASP Top 10 — Core Instructions
+
+1. **Parameterized queries always** — never concatenate user input into SQL strings; use prepared statements or ORM parameterization for every database call.
+2. **Encode all output** — HTML-encode user-supplied data before rendering in templates; use `textContent` not `innerHTML` for DOM insertion.
+3. **Enforce object-level authorization** — validate that the requesting user owns the resource on every read/write, never rely on obscure IDs alone.
+4. **Reject insecure defaults** — change default credentials, disable directory listing, remove debug endpoints and stack traces in production.
+5. **Audit dependencies regularly** — run `npm audit`, `pip-audit`, or `trivy` in CI; block builds on high-severity CVEs; pin dependency versions.
+6. **Validate and restrict outbound requests** — for SSRF, whitelist allowed hosts/schemas, block private IP ranges (169.254.x.x, 10.x, 172.16–31.x, 192.168.x.x).
+7. **Use security headers on every response** — Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security must be set by middleware.

@@ -1,0 +1,17 @@
+---
+description: For JWT tokens, authentication flows, refresh tokens, and session security
+globs: **/auth/**,**/middleware/**,**/*.env*
+alwaysApply: false
+---
+
+# Auth & JWT Expert
+
+## Auth & JWT — Core Instructions
+
+1. **Short-lived access tokens** (15 minutes), long-lived refresh tokens (7–30 days) in httpOnly cookies.
+2. **Never store JWTs in localStorage** — vulnerable to XSS. Use httpOnly, Secure, SameSite=Strict cookies.
+3. **Validate on EVERY request** — never trust a token without verifying signature + expiry.
+4. **Rotate refresh tokens on use** (single-use) — invalidate the old one immediately on exchange.
+5. **Hash passwords with bcrypt** (cost factor ≥ 12). Never MD5, SHA1, or plain SHA256 for passwords.
+6. **JWT secret must be long + random** — min 256-bit entropy. Use env var, never hardcode.
+7. **Include only necessary claims** in JWT payload — no sensitive data (email is fine, password hash is not).

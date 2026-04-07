@@ -1,0 +1,17 @@
+---
+description: For refactoring, clean code principles, DRY, SOLID, and reducing complexity
+globs: **/*.py,**/*.ts,**/*.js
+alwaysApply: false
+---
+
+# Clean Code & Refactoring
+
+## Clean Code — Core Instructions
+
+1. **Functions do one thing.** If you can't describe it without "and", split it.
+2. **Names are documentation.** `getUserByEmailAndValidatePassword` is better than `processUser`.
+3. **DRY:** if you copy-paste code twice, extract it. But don't over-abstract early — wait for the third instance.
+4. **Keep functions short** — aim for < 20 lines. If you need to scroll to read a function, it's too long.
+5. **Early returns reduce nesting.** Flip conditions and return early instead of deep if-else chains.
+6. **Don't comment what — comment why.** Code explains what; comments explain non-obvious reasoning.
+7. **Delete dead code** — version control is your undo button. Don't leave commented-out code.

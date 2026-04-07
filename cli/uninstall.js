@@ -88,13 +88,10 @@ function uninstall(options = {}) {
   }
 
   // ── 4. OpenCode ──────────────────────────────────────────────────────────────
-  const opencodeConfig = path.join(cwd, ".opencode", "config.json");
-  if (fs.existsSync(opencodeConfig)) {
-    fs.unlinkSync(opencodeConfig);
-    removed.push(".opencode/config.json");
-    const opencodeDir = path.join(cwd, ".opencode");
-    if (fs.readdirSync(opencodeDir).length === 0) fs.rmdirSync(opencodeDir);
-  }
+  // Global config (~/.opencode.json) - handled by Python bridge
+  const opencodeGlobal = path.join(os.homedir(), ".opencode.json");
+  const opencodeSkillsRemoved = false;
+  // Note: OpenCode global config cleanup is handled by installer_bridge.py --action uninstall
 
   // ── 5. Windsurf ──────────────────────────────────────────────────────────────
   const windsurfRules = path.join(cwd, ".windsurf", "rules.md");

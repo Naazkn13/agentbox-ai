@@ -1,0 +1,17 @@
+---
+description: For rate limiting, input validation, CORS, API key management, OAuth 2.0 scopes, and SSRF prevention
+globs: **/auth/**,**/middleware/**,**/*.env*
+alwaysApply: false
+---
+
+# API Security Expert
+
+## API Security — Core Instructions
+
+1. **Validate all input at the boundary** — use a schema validation library (Zod, Joi, Pydantic) and reject requests that fail validation before any business logic runs.
+2. **Rate-limit every public endpoint** — apply per-IP and per-user limits; use sliding-window counters in Redis; return 429 with `Retry-After` header.
+3. **Configure CORS explicitly** — never use wildcard `*` in production; enumerate allowed origins, methods, and headers; reflect `Origin` only after whitelist check.
+4. **Rotate and scope API keys** — generate keys with `crypto.randomBytes`, store only the hash; issue separate keys per consumer with minimal permission scopes.
+5. **Enforce OAuth 2.0 scopes** — check required scope on every protected route; reject tokens missing the required scope with 403, not 401.
+6. **Encode output to prevent injection** — HTML-encode in HTML responses, JSON-encode for JSON (automatic with `res.json()`), avoid building response strings manually.
+7. **Block SSRF via strict URL validation** — whitelist allowed upstream hosts; reject private/loopback IPs; disable redirects on outbound HTTP clients.

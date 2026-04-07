@@ -17,13 +17,14 @@ from typing import Optional
 # Skill data model (parsed from SKILL.md)
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class Skill:
     id: str
     name: str
     category: str
-    level1: str              # activation trigger (~50 tokens)
-    content: str             # full raw SKILL.md content
+    level1: str  # activation trigger (~50 tokens)
+    content: str  # full raw SKILL.md content
     platforms: list[str] = field(default_factory=list)
     keywords: list[str] = field(default_factory=list)
     priority: int = 5
@@ -43,7 +44,7 @@ class AgentKitConfig:
     quality_gates_enabled: bool = True
     workflow_enforcement: bool = True
     agentkit_home: str = ""
-    python_cmd: str = "python3"   # "python3" on Mac/Linux, "python" on Windows
+    python_cmd: str = "python3"  # "python3" on Mac/Linux, "python" on Windows
 
 
 @dataclass
@@ -62,6 +63,7 @@ _LEVEL_PATTERN = re.compile(
     r"<!--\s*LEVEL\s+(\d)\s*START\s*-->(.+?)<!--\s*LEVEL\s+\d\s*END\s*-->",
     re.DOTALL | re.IGNORECASE,
 )
+
 
 def extract_level(content: str, level: int) -> str:
     """Extract a LEVEL N section from SKILL.md content."""
@@ -100,16 +102,17 @@ def parse_skill_file(path: str) -> Optional[Skill]:
     if fm_match:
         try:
             import yaml
+
             fm = yaml.safe_load(fm_match.group(1)) or {}
         except Exception:
             pass
 
-    skill_id   = fm.get("id", Path(path).stem)
-    name       = fm.get("name", skill_id.replace("-", " ").title())
-    category   = fm.get("category", "general")
-    level1     = fm.get("level1", extract_level(content, 1) or name)
-    platforms  = fm.get("platforms", [])
-    keywords   = fm.get("keywords", [])
+    skill_id = fm.get("id", Path(path).stem)
+    name = fm.get("name", skill_id.replace("-", " ").title())
+    category = fm.get("category", "general")
+    level1 = fm.get("level1", extract_level(content, 1) or name)
+    platforms = fm.get("platforms", [])
+    keywords = fm.get("keywords", [])
 
     return Skill(
         id=skill_id,
@@ -150,6 +153,7 @@ def load_skills(skills_dir: str) -> list[Skill]:
 # Base adapter
 # ---------------------------------------------------------------------------
 
+
 class PlatformAdapter(ABC):
     """
     Abstract base for all platform adapters.
@@ -158,7 +162,7 @@ class PlatformAdapter(ABC):
 
     PLATFORM_ID: str = ""
     PLATFORM_NAME: str = ""
-    TIER: int = 3           # 1=Full, 2=Partial, 3=Basic
+    TIER: int = 3  # 1=Full, 2=Partial, 3=Basic
 
     def __init__(self, project_root: str | None = None):
         self.project_root = Path(project_root or os.getcwd())
@@ -188,6 +192,10 @@ class PlatformAdapter(ABC):
     def install(self, skills: list[Skill], config: AgentKitConfig) -> InstallResult:
         """Install skills + config for this platform."""
 
+    def uninstall(self) -> InstallResult:
+        """Uninstall AgentKit from this platform."""
+        return InstallResult(platform=self.PLATFORM_ID, success=True)
+
     def detect(self) -> bool:
         """Return True if this platform is present in the environment."""
         return False
@@ -209,7 +217,9 @@ def register(cls: type[PlatformAdapter]) -> type[PlatformAdapter]:
     return cls
 
 
-def get_adapter(platform_id: str, project_root: str | None = None) -> Optional[PlatformAdapter]:
+def get_adapter(
+    platform_id: str, project_root: str | None = None
+) -> Optional[PlatformAdapter]:
     cls = _REGISTRY.get(platform_id)
     return cls(project_root) if cls else None
 

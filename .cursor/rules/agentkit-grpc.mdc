@@ -1,0 +1,17 @@
+---
+description: For defining .proto files, gRPC services, code generation, streaming, interceptors, and buf tooling
+globs: **/*
+alwaysApply: false
+---
+
+# gRPC & Protobuf Expert
+
+## gRPC & Protobuf — Core Instructions
+
+1. **Use proto3 syntax always:** declare `syntax = "proto3";` at the top; never use proto2 for new services.
+2. **Never change field numbers:** once a field number is used in production, it is permanent — removing a field means reserving its number with `reserved`.
+3. **Map gRPC status codes correctly:** use `NOT_FOUND` (5), `INVALID_ARGUMENT` (3), `ALREADY_EXISTS` (6), `UNAUTHENTICATED` (16), `PERMISSION_DENIED` (7), `INTERNAL` (13) — never return raw `UNKNOWN`.
+4. **Always set deadlines on the client side:** never make an RPC without a context deadline/timeout; servers must respect `ctx.Done()`.
+5. **Use interceptors for cross-cutting concerns:** logging, auth token injection, retry, and metrics belong in unary/stream interceptors, not in handler code.
+6. **Prefer server-streaming over polling:** if a client needs to watch for updates, use server-streaming RPC instead of repeated unary calls.
+7. **Manage .proto files with buf:** use `buf.yaml` + `buf.gen.yaml` for linting, breaking-change detection, and multi-language code generation instead of raw `protoc`.

@@ -1,0 +1,17 @@
+---
+description: For GitHub Actions workflows — CI/CD pipelines, matrix builds, secrets, reusable workflows
+globs: **/*
+alwaysApply: false
+---
+
+# GitHub Actions Expert
+
+## GitHub Actions Expert — Core Instructions
+
+1. **Pin actions to a full commit SHA, not a mutable tag** — `actions/checkout@v4` can change under you; `actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683` is immutable. Use SHA pins for all third-party actions in production workflows.
+2. **Never hardcode secrets — always use `secrets` context** — reference as `${{ secrets.MY_SECRET }}`. Never echo secrets; GitHub masks known secret values but not derived ones.
+3. **Use `concurrency` groups to cancel stale runs** — on push/PR workflows, set `concurrency.cancel-in-progress: true` so a new push cancels the in-flight run for the same branch.
+4. **Separate CI (test) from CD (deploy) workflows** — CI runs on every PR; CD runs only on merge to `main` or on explicit tags. Coupling them leads to accidental deploys.
+5. **Cache dependencies explicitly** — `actions/cache` keyed on the lockfile hash eliminates redundant installs. Without caching, a 2-minute `npm install` runs on every commit.
+6. **Use `environment` for production deploys** — environments enforce required reviewers and scoped secrets, preventing accidental prod deployments from feature branches.
+7. **Use `workflow_call` for reusable logic** — extract shared CI steps (lint, test, build) into a reusable workflow called with `uses:` rather than copy-pasting YAML across repositories.

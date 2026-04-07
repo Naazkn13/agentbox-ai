@@ -10,21 +10,29 @@ import json
 import os
 import sys
 
+
 def main() -> None:
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("--platform",   required=True)
-    parser.add_argument("--skills",     required=True, help="Comma-separated skill IDs")
-    parser.add_argument("--home",       required=True, help="AGENTKIT_HOME path")
-    parser.add_argument("--python-cmd", default="python3", help="Python executable name")
+    parser.add_argument("--platform", required=True)
+    parser.add_argument("--action", required=True, choices=["install", "uninstall"])
+    parser.add_argument("--skills", required=True, help="Comma-separated skill IDs")
+    parser.add_argument("--home", required=True, help="AGENTKIT_HOME path")
+    parser.add_argument(
+        "--python-cmd", default="python3", help="Python executable name"
+    )
     args = parser.parse_args()
 
     sys.path.insert(0, args.home)
 
     # Import all adapters so the registry is populated
     from platform.adapter import (
-        get_adapter, load_skills, AgentKitConfig,
+        get_adapter,
+        load_skills,
+        AgentKitConfig,
     )
+
     # Force adapter registration by importing the package
     import platform.adapters.claude_code
     import platform.adapters.cursor
@@ -39,18 +47,35 @@ def main() -> None:
 
     adapter = get_adapter(args.platform)
     if not adapter:
-        print(json.dumps({
-            "success": False,
-            "filesWritten": [],
-            "error": f"Unknown platform: {args.platform}",
-        }))
+        print(
+            json.dumps(
+                {
+                    "success": False,
+                    "filesWritten": [],
+                    "error": f"Unknown platform: {args.platform}",
+                }
+            )
+        )
         sys.exit(1)
+
+    if args.action == "uninstall":
+        result = adapter.uninstall()
+        print(
+            json.dumps(
+                {
+                    "success": result.success,
+                    "filesWritten": result.files_written,
+                    "error": result.error,
+                }
+            )
+        )
+        return
 
     # Load skills from the AgentKit skills directory
     skills_dir = os.path.join(args.home, "skills")
     all_skills = load_skills(skills_dir)
     wanted_ids = set(args.skills.split(","))
-    skills     = [s for s in all_skills if s.id in wanted_ids]
+    skills = [s for s in all_skills if s.id in wanted_ids]
 
     if not skills:
         # Fall back to all skills if none matched
@@ -59,11 +84,15 @@ def main() -> None:
     config = AgentKitConfig(agentkit_home=args.home, python_cmd=args.python_cmd)
     result = adapter.install(skills, config)
 
-    print(json.dumps({
-        "success":      result.success,
-        "filesWritten": result.files_written,
-        "error":        result.error,
-    }))
+    print(
+        json.dumps(
+            {
+                "success": result.success,
+                "filesWritten": result.files_written,
+                "error": result.error,
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

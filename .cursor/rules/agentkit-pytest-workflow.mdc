@@ -1,0 +1,17 @@
+---
+description: For writing and organising pytest tests with fixtures, mocks, and coverage
+globs: **/*
+alwaysApply: false
+---
+
+# Pytest Workflow
+
+## Pytest Workflow — Core Instructions
+
+1. **One assertion per test concept** — each test should have a single reason to fail. Multiple unrelated assertions in one test make failures ambiguous.
+2. **Use fixtures for setup/teardown, never `setUp`/`tearDown` methods** — fixtures are composable and scope-controlled; class-based test setup is the unittest way, not the pytest way.
+3. **Parametrize to avoid copy-pasting tests** — if two tests differ only in input/output values, use `@pytest.mark.parametrize`.
+4. **Put shared fixtures in `conftest.py`** — pytest discovers it automatically; you never import from it. Place it at the package boundary that needs the fixture.
+5. **Mock at the boundary where it is used, not where it is defined** — patch `myapp.services.requests.get`, not `requests.get`.
+6. **Use `pytest-mock`'s `mocker` fixture over `unittest.mock.patch` as a decorator** — `mocker` auto-resets after each test; decorators require careful ordering.
+7. **Run coverage with `--cov` and check branch coverage** — line coverage hides untested conditional branches; use `--cov-branch`.

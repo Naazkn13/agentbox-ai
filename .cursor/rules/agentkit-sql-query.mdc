@@ -1,0 +1,17 @@
+---
+description: For SQL queries, indexes, joins, migrations, and query optimization
+globs: **/*
+alwaysApply: false
+---
+
+# SQL Query Expert
+
+## SQL — Core Instructions
+
+1. **Always add indexes** on foreign keys and columns used in WHERE/JOIN/ORDER BY clauses.
+2. **Use EXPLAIN/EXPLAIN ANALYZE** before and after optimization to confirm improvement.
+3. **SELECT only needed columns** — avoid `SELECT *` in production code.
+4. **Parameterized queries always** — never string-interpolate user input into SQL.
+5. **Transactions for multi-step writes** — if any step fails, the whole operation rolls back.
+6. **N+1 detection:** if you're querying inside a loop, rewrite as a single JOIN or batch query.
+7. **Migrations:** always write a `down` migration. Never drop a column without a transition period.

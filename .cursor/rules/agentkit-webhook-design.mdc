@@ -1,0 +1,17 @@
+---
+description: For designing reliable webhooks — HMAC verification, idempotency, retries, event schemas, and local testing
+globs: **/*
+alwaysApply: false
+---
+
+# Webhook Design Expert
+
+## Webhook Design — Core Instructions
+
+1. **Always verify HMAC signatures first:** before processing any webhook payload, verify the `X-Signature` header using a shared secret — reject with `401` if invalid, `400` if the header is missing.
+2. **Respond 200 immediately, process async:** return `200 OK` within 5 seconds; push the verified payload to a queue or background job for actual processing — never do slow work in the handler.
+3. **Make all handlers idempotent:** use the event `id` field as an idempotency key stored in a DB/cache — if already processed, return `200` without re-processing.
+4. **Use a consistent event schema:** every event must have `id`, `type`, `created_at`, and `data` fields — consumers rely on this contract.
+5. **Implement exponential backoff with jitter on retries:** wait `min(base * 2^attempt, maxDelay) + random jitter` between delivery attempts; stop after a configurable max (e.g., 10 attempts over 24 hours).
+6. **Sign payloads with a timestamp to prevent replay attacks:** include the timestamp in the signed string (e.g., `t=<unix>&v1=<hmac>`) and reject payloads older than 5 minutes.
+7. **Test locally with ngrok or smee.io:** use `ngrok http 3000` to expose a local server and paste the HTTPS URL as the webhook endpoint during development.
