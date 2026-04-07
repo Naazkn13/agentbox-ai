@@ -226,6 +226,82 @@ def _box_line(left: str, right: str, lw: int, rw: int) -> str:
     return f"║  {left:<{lw}}  ║  {right:<{rw}}  ║"  # noqa: E501
 
 
+def startup_banner(platform: str = "claude-code", skill_count: int = 0) -> str:
+    """
+    Compact visual banner shown at the start of every AgentKit session.
+    Printed to stdout so the AI (and user) sees it on turn 1.
+    """
+    import os as _os
+    from pathlib import Path as _Path
+
+    version = "?.?.?"
+    try:
+        pkg = _Path(__file__).parent.parent / "package.json"
+        import json as _json
+        version = _json.loads(pkg.read_text()).get("version", version)
+    except Exception:
+        pass
+
+    if skill_count == 0:
+        try:
+            import glob as _glob
+            skills_dir = str(_Path(__file__).parent.parent / "skills")
+            skill_count = len(_glob.glob(skills_dir + "/**/*.md", recursive=True))
+        except Exception:
+            skill_count = 0
+
+    # Today's cost from status line
+    status_line = render_status_line()
+    cost_part = status_line.split("|")[0].strip() if "|" in status_line else "$0.000"
+
+    PLATFORM_LABELS = {
+        "claude-code": "Claude Code",
+        "gemini-cli":  "Gemini CLI",
+        "opencode":    "OpenCode",
+        "codex":       "Codex CLI",
+        "cursor":      "Cursor",
+    }
+    platform_label = PLATFORM_LABELS.get(platform, platform)
+
+    W = 52  # inner width
+    def row(left: str, right: str = "") -> str:
+        content = f"  {left}"
+        if right:
+            content = f"  {left:<26}{right}"
+        return f"║{content:<{W}}║"
+
+    lines = [
+        "╔" + "═" * W + "╗",
+        row(f"⚡ AgentKit v{version} — ACTIVE"),
+        row(f"Platform: {platform_label}", f"Skills: {skill_count}"),
+        row(f"Session cost: {cost_part}", "hooks: ON"),
+        "╠" + "═" * W + "╣",
+        row("Run agentkit analytics   → usage dashboard"),
+        row("Run agentkit status      → health check"),
+        "╚" + "═" * W + "╝",
+    ]
+    return "\n".join(lines)
+
+
+def banner_instruction_block(platform: str = "claude-code", skill_count: int = 0) -> str:
+    """
+    Returns a system-prompt block instructing the AI to display the
+    AgentKit startup banner on its FIRST response each session.
+    Embedded by platform adapters into system prompts / config files.
+    """
+    banner = startup_banner(platform=platform, skill_count=skill_count)
+    return (
+        "<!-- AGENTKIT_BANNER_START -->\n"
+        "## AgentKit — Session Start\n"
+        "**IMPORTANT:** At the very start of your FIRST response in each conversation, "
+        "display the following banner exactly as shown, then proceed with the user's request:\n\n"
+        "```\n"
+        f"{banner}\n"
+        "```\n"
+        "<!-- AGENTKIT_BANNER_END -->"
+    )
+
+
 def full_analytics(days: int = 7) -> str:
     records = _read_log(max_age_days=days)
 
@@ -430,6 +506,11 @@ if __name__ == "__main__":
     p_analytics_md = sub.add_parser("analytics-md", help="Markdown analytics summary for platform injection")
     p_analytics_md.add_argument("--days", type=int, default=7)
 
+    # banner sub-command (startup visual banner)
+    p_banner = sub.add_parser("banner", help="Print AgentKit startup banner")
+    p_banner.add_argument("--platform",     default="claude-code")
+    p_banner.add_argument("--skill-count",  type=int, default=0)
+
     args = parser.parse_args()
 
     if args.cmd == "log":
@@ -457,3 +538,6 @@ if __name__ == "__main__":
 
     elif args.cmd == "analytics-md":
         print(analytics_summary_md(days=args.days))
+
+    elif args.cmd == "banner":
+        print(startup_banner(platform=args.platform, skill_count=args.skill_count))

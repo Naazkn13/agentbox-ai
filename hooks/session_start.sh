@@ -22,6 +22,10 @@ if [ -f "$STATE_FILE" ]; then
   fi
 fi
 
+# Print AgentKit startup banner (visible to the AI and user on turn 1)
+python3 "${AGENTKIT_HOME}/hooks/render_dashboard.py" banner \
+  --platform "claude-code" 2>/dev/null || true
+
 echo "$INPUT" | python3 "${AGENTKIT_HOME}/memory/handoff.py" load
 
 exit 0

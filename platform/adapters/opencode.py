@@ -72,9 +72,13 @@ class OpenCodeAdapter(PlatformAdapter):
             flags=re.DOTALL,
         ).strip()
 
-        # Inject analytics summary
+        # Inject startup banner instruction + analytics summary
+        banner_block   = self._build_banner_block(len(skills))
         analytics_block = self._build_analytics_block()
-        final_prompt = (existing_prompt + "\n\n" + skills_prompt + "\n\n" + analytics_block).strip()
+        final_prompt = (
+            existing_prompt + "\n\n" + skills_prompt
+            + "\n\n" + banner_block + "\n\n" + analytics_block
+        ).strip()
         cfg["system_prompt"] = final_prompt
         if config.model_routing_enabled:
             cfg["model"] = config.default_model
@@ -82,6 +86,31 @@ class OpenCodeAdapter(PlatformAdapter):
         global_config.write_text(json.dumps(cfg, indent=2))
         result.files_written.append(str(global_config))
         return result
+
+    def _build_banner_block(self, skill_count: int = 0) -> str:
+        try:
+            import subprocess
+            import sys
+            agentkit_home = str(Path(__file__).parent.parent.parent)
+            res = subprocess.run(
+                [sys.executable, str(Path(agentkit_home) / "hooks" / "render_dashboard.py"),
+                 "banner", "--platform", self.PLATFORM_ID, "--skill-count", str(skill_count)],
+                capture_output=True, text=True, timeout=10,
+            )
+            if res.returncode == 0 and res.stdout.strip():
+                # Wrap in the instruction format
+                banner_text = res.stdout.strip()
+                return (
+                    "<!-- AGENTKIT_BANNER_START -->\n"
+                    "## AgentKit — Session Start\n"
+                    "**IMPORTANT:** At the very start of your FIRST response in each conversation, "
+                    "display the following banner exactly as shown, then proceed normally:\n\n"
+                    f"```\n{banner_text}\n```\n"
+                    "<!-- AGENTKIT_BANNER_END -->"
+                )
+        except Exception:
+            pass
+        return "<!-- AGENTKIT_BANNER_START -->\n## AgentKit Active\n<!-- AGENTKIT_BANNER_END -->"
 
     def _build_analytics_block(self) -> str:
         try:
@@ -117,6 +146,12 @@ class OpenCodeAdapter(PlatformAdapter):
                 )
                 cleaned = re.sub(
                     re.escape(ANALYTICS_MARKER) + r".*?" + re.escape(ANALYTICS_END),
+                    "",
+                    cleaned,
+                    flags=re.DOTALL,
+                )
+                cleaned = re.sub(
+                    r"<!-- AGENTKIT_BANNER_START -->.*?<!-- AGENTKIT_BANNER_END -->",
                     "",
                     cleaned,
                     flags=re.DOTALL,
