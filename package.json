@@ -1,6 +1,6 @@
 {
   "name": "agentkit-ai",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "description": "Intelligent orchestration layer for agentic coding — 50 skills, smart skill loading, persistent memory, 70% cost reduction, enforced workflows, and 10+ platform support.",
   "keywords": [
     "claude-code",
@@ -30,9 +30,9 @@
   },
   "main": "cli/index.js",
   "scripts": {
-    "start":   "node cli/index.js",
+    "start": "node cli/index.js",
     "postinstall": "node cli/postinstall.js",
-    "test":    "node cli/test.js"
+    "test": "node cli/test.js"
   },
   "engines": {
     "node": ">=18.0.0"
