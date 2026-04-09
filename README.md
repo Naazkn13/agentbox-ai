@@ -178,6 +178,23 @@ Find the path with: `npm root -g agentkit-ai` → append `/platform/opencode-plu
 
 ---
 
+## Works With Any Model — Tested on Gemma 4 31b
+
+AgentKit is model-agnostic. The skill router, workflow engine, and marketplace run entirely via CLI — no Claude API required. We tested AgentKit with **Gemma 4 31b** running locally via Ollama inside OpenCode, and it performed exceptionally well.
+
+![AgentKit running with Gemma 4 31b in OpenCode](GEMMA_4.png)
+
+**What you're seeing in the screenshot:**
+- `Agentkit-Preview · gemma4:31b-cloud` — Gemma 4 31b is the active model
+- AgentKit's workflow state machine running (`RESEARCH` phase)
+- Gemma correctly calling `agentkit workflow transition` CLI commands
+- Gemma installing skills via `npx skills add` from the ecosystem
+- Full skill-routing and workflow enforcement — zero Claude dependency
+
+**Why this matters:** You can use AgentKit to get structured workflows, 50+ injected skills, and token savings on any model — Gemma, Mistral, GPT-4o, or local models via Ollama. The intelligence layer is in the tooling, not the model.
+
+---
+
 ## Dynamic Agent Spawning
 
 AgentKit v0.5.4 adds a **zero-config spawn engine** that automatically detects when a task needs multiple agents and orchestrates them for you.
