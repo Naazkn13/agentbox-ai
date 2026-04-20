@@ -222,8 +222,11 @@ function install(options = {}) {
   // 5. Install shell wrappers for non-hook platforms (OpenCode, Gemini CLI)
   const installedIds = results.filter(r => r.success).map(r => r.platform);
   const shellAliases = [];
+  const isWin = process.platform === "win32";
   if (installedIds.includes("opencode")) {
-    const wrapperPath = path.join(agentKitHome, "cli", "opencode-wrapper.sh");
+    const wrapperPath = isWin
+      ? path.join(agentKitHome, "cli", "opencode-wrapper.ps1")
+      : path.join(agentKitHome, "cli", "opencode-wrapper.sh");
     shellAliases.push({ name: "opencode", wrapper: wrapperPath });
     _writeShellAlias("opencode", wrapperPath, agentKitHome);
   }
@@ -244,7 +247,11 @@ function install(options = {}) {
       for (const a of shellAliases) {
         log(`    alias ${a.name} → agentkit-wrapper`);
       }
-      log("  Reload your shell: source ~/.zprofile  (or ~/.zshrc / ~/.bashrc)\n");
+      if (isWin) {
+        log("  Reload PowerShell or run: . $PROFILE\n");
+      } else {
+        log("  Reload your shell: source ~/.zprofile  (or ~/.zshrc / ~/.bashrc)\n");
+      }
     }
     log("  Estimated savings:");
     log("    Tokens:  ~40,000 → ~5,000/session (89% reduction)");
@@ -263,18 +270,28 @@ function install(options = {}) {
 }
 
 /**
- * Write an alias to ~/.zshrc and ~/.bashrc so the platform launcher
- * prints the AgentKit banner before starting the tool.
+ * Write an alias/function so the platform launcher prints the AgentKit
+ * banner before starting the tool.
+ *
+ * - Mac/Linux: writes to ~/.zshrc / ~/.bashrc
+ * - Windows: writes to PowerShell $PROFILE
  */
 function _writeShellAlias(cmdName, wrapperPath, agentKitHome) {
-  const os   = require("os");
-  const home = os.homedir();
+  const osModule = require("os");
+  const home = osModule.homedir();
+
+  if (process.platform === "win32") {
+    // Windows: write a PowerShell function to $PROFILE
+    _writePowerShellAlias(cmdName, wrapperPath, agentKitHome);
+    return;
+  }
+
+  // Mac/Linux: write to shell rc files
   const marker = `# AGENTKIT_ALIAS_${cmdName.toUpperCase()}`;
   const aliasLine = `alias ${cmdName}='AGENTKIT_HOME="${agentKitHome}" bash "${wrapperPath}"'`;
   const block = `\n${marker}\n${aliasLine}\n`;
 
   // Determine which shell config files to write to.
-  // Priority: existing files first, then create ~/.zshrc if on zsh.
   const candidates = [".zshrc", ".zprofile", ".bashrc", ".bash_profile"];
   let written = false;
 
@@ -294,6 +311,54 @@ function _writeShellAlias(cmdName, wrapperPath, agentKitHome) {
   if (!written) {
     const zshrc = path.join(home, ".zshrc");
     fs.writeFileSync(zshrc, `# Created by AgentKit installer\n${block}`, "utf8");
+  }
+}
+
+/**
+ * Write a PowerShell function to the user's $PROFILE so that
+ * `opencode` launches through the AgentKit wrapper.
+ */
+function _writePowerShellAlias(cmdName, wrapperPath, agentKitHome) {
+  const osModule = require("os");
+  const home = osModule.homedir();
+
+  // Determine PowerShell profile path
+  const profilePaths = [
+    path.join(home, "Documents", "PowerShell", "Microsoft.PowerShell_profile.ps1"),
+    path.join(home, "Documents", "WindowsPowerShell", "Microsoft.PowerShell_profile.ps1"),
+  ];
+
+  let profilePath = profilePaths.find(p => fs.existsSync(p)) || profilePaths[0];
+
+  const marker = `# AGENTKIT_ALIAS_${cmdName.toUpperCase()}`;
+  const funcBlock = [
+    "",
+    marker,
+    `function ${cmdName} {`,
+    `  $env:AGENTKIT_HOME = "${agentKitHome.replace(/\\/g, "\\\\")}"`,
+    `  & powershell -ExecutionPolicy Bypass -File "${wrapperPath.replace(/\\/g, "\\\\")}" @args`,
+    `}`,
+    "",
+  ].join("\n");
+
+  try {
+    // Ensure directory exists
+    const profileDir = path.dirname(profilePath);
+    if (!fs.existsSync(profileDir)) {
+      fs.mkdirSync(profileDir, { recursive: true });
+    }
+
+    let content = "";
+    if (fs.existsSync(profilePath)) {
+      content = fs.readFileSync(profilePath, "utf8");
+      // Remove old AgentKit block
+      const oldBlockRe = new RegExp(`\\n?${marker}\\n[\\s\\S]*?\\n}\\n?`, "g");
+      content = content.replace(oldBlockRe, "");
+    }
+
+    fs.writeFileSync(profilePath, content + funcBlock, "utf8");
+  } catch {
+    // Non-fatal — user can add the function manually
   }
 }
 
