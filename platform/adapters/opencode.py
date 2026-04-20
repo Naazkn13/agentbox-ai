@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 
 from platform.adapter import (
@@ -109,8 +110,9 @@ class OpenCodeAdapter(PlatformAdapter):
         return result
 
     def _install_agent_file(self, skill_count: int, result: InstallResult) -> None:
-        """Create ~/.config/opencode/agent/agentkit.md so AgentKit appears in 'Select agent'."""
-        agent_dir = Path.home() / ".config" / "opencode" / "agent"
+        """Create agent file so AgentKit appears in 'Select agent'."""
+        # OpenCode uses ~/.config/opencode/agents/ on ALL platforms (including Windows)
+        agent_dir = Path.home() / ".config" / "opencode" / "agents"
         agent_file = agent_dir / "agentkit.md"
         try:
             agent_dir.mkdir(parents=True, exist_ok=True)
@@ -324,7 +326,7 @@ class OpenCodeAdapter(PlatformAdapter):
                 result.error = str(e)
 
         # Remove agent persona file
-        agent_file = Path.home() / ".config" / "opencode" / "agent" / "agentkit.md"
+        agent_file = Path.home() / ".config" / "opencode" / "agents" / "agentkit.md"
         try:
             if agent_file.exists():
                 agent_file.unlink()

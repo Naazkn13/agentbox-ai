@@ -14,8 +14,7 @@ export default {
 
   tui: async (api) => {
     // Lazy imports (dynamic — TUI plugins run in browser context, no top-level Node.js imports)
-    const { readFileSync, existsSync } = await import("fs");
-    const { execSync }                 = await import("child_process");
+    const { readFileSync, existsSync, readdirSync } = await import("fs");
     const { resolve, dirname }         = await import("path");
     const { fileURLToPath }            = await import("url");
 
@@ -32,11 +31,18 @@ export default {
     } catch {}
 
     try {
-      const out = execSync(
-        `find "${AGENTKIT_HOME}/skills" -name "*.md" 2>/dev/null | wc -l`,
-        { encoding: "utf8", timeout: 3000 }
-      ).trim();
-      skills = parseInt(out) || 0;
+      function countMdFiles(dir) {
+        let count = 0;
+        try {
+          for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            const full = resolve(dir, entry.name);
+            if (entry.isDirectory() && entry.name !== "node_modules") count += countMdFiles(full);
+            else if (entry.name.endsWith(".md") && entry.name !== "README.md" && entry.name !== "registry.md") count++;
+          }
+        } catch {}
+        return count;
+      }
+      skills = countMdFiles(resolve(AGENTKIT_HOME, "skills"));
     } catch {}
 
     try {
