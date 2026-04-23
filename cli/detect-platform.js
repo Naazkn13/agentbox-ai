@@ -7,7 +7,10 @@
 
 const fs   = require("fs");
 const path = require("path");
+const os   = require("os");
 const { execSync } = require("child_process");
+
+const HOME = os.homedir();
 
 const PLATFORMS = [
   {
@@ -15,7 +18,7 @@ const PLATFORMS = [
     name:  "Claude Code",
     tier:  1,
     checks: [
-      () => fs.existsSync(path.join(process.env.HOME || "", ".claude")),
+      () => fs.existsSync(path.join(HOME, ".claude")),
       () => fs.existsSync(path.join(process.cwd(), ".claude")),
       () => which("claude"),
     ],
@@ -25,7 +28,7 @@ const PLATFORMS = [
     name:  "Cursor",
     tier:  2,
     checks: [
-      () => fs.existsSync(path.join(process.env.HOME || "", ".cursor")),
+      () => fs.existsSync(path.join(HOME, ".cursor")),
       () => fs.existsSync(path.join(process.cwd(), ".cursor")),
       () => fs.existsSync(path.join(process.cwd(), ".cursorrules")),
       () => which("cursor"),
@@ -76,7 +79,7 @@ const PLATFORMS = [
     checks: [
       () => which("aider"),
       () => fs.existsSync(path.join(process.cwd(), ".aider.conf.yml")),
-      () => fs.existsSync(path.join(process.env.HOME || "", ".aider.conf.yml")),
+      () => fs.existsSync(path.join(HOME, ".aider.conf.yml")),
     ],
   },
   {
@@ -111,7 +114,8 @@ const PLATFORMS = [
 /** Return true if an executable is in PATH. */
 function which(cmd) {
   try {
-    execSync(`which ${cmd}`, { stdio: "ignore" });
+    const isWin = process.platform === "win32";
+    execSync(isWin ? `where ${cmd}` : `which ${cmd}`, { stdio: "ignore" });
     return true;
   } catch {
     return false;

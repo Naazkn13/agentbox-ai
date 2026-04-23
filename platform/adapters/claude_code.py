@@ -137,8 +137,36 @@ def _merge_hooks(
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/spawn_hook.py")
     _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/skill_router_hook.py")
 
-    # Bash hooks only work on Mac/Linux — skip on Windows (no native bash)
-    if not is_windows:
+    if is_windows:
+        # Windows: use cross-platform Python hook equivalents
+        _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/session_start_hook.py")
+        _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/memory_inject_hook.py")
+        _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/model_router_hook.py")
+        _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/thinking_budget_hook.py")
+        _ensure_hook("UserPromptSubmit", None, f"{PY} {H}/hooks/workflow_state_hook.py")
+        _ensure_hook(
+            "PreToolUse", "Edit|Write|MultiEdit", f"{PY} {H}/hooks/forced_eval_hook.py"
+        )
+        _ensure_hook(
+            "PreToolUse", "Edit|Write|MultiEdit", f"{PY} {H}/hooks/plan_gate_hook.py"
+        )
+        _ensure_hook("PostToolUse", "Read", f"{PY} {H}/hooks/research_gate_hook.py")
+        _ensure_hook(
+            "PostToolUse",
+            "Read|Edit|Write|Bash|MultiEdit",
+            f"{PY} {H}/hooks/memory_recorder_hook.py",
+        )
+        _ensure_hook(
+            "PostToolUse",
+            "Read|Edit|Write|Bash|MultiEdit",
+            f"{PY} {H}/hooks/cost_dashboard_hook.py",
+        )
+        _ensure_hook(
+            "PostToolUse", "Edit|Write|MultiEdit", f"{PY} {H}/hooks/quality_gates_hook.py"
+        )
+        _ensure_hook("Stop", None, f"{PY} {H}/hooks/session_end_hook.py")
+    else:
+        # Mac/Linux: use original bash hooks (unchanged)
         _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/session_start.sh")
         _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/memory_inject.sh")
         _ensure_hook("UserPromptSubmit", None, f"bash {H}/hooks/model_router_hook.sh")
