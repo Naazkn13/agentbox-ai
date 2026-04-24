@@ -1,0 +1,18 @@
+description: For Dockerfiles, docker-compose, containers, images, and networking
+name: agentkit-docker
+priority: 1
+prompt: "## Docker \xE2\u20AC\u201D Core Instructions\n\n1. **Multi-stage builds**\
+  \ to keep production images small \xE2\u20AC\u201D build stage (with dev tools)\
+  \ \xE2\u2020\u2019 runtime stage (minimal).\n2. **`.dockerignore` always** \xE2\u20AC\
+  \u201D exclude `node_modules`, `.git`, `.env`, build outputs.\n3. **Pin base image\
+  \ versions** \xE2\u20AC\u201D `node:20-alpine` not `node:latest`. Reproducible builds.\n\
+  4. **Non-root user in production** \xE2\u20AC\u201D `USER node` or create a dedicated\
+  \ user. Never run containers as root.\n5. **Layer caching:** copy `package.json`\
+  \ + install deps BEFORE copying source code. Deps change less often.\n6. **Healthchecks\
+  \ in compose** \xE2\u20AC\u201D `healthcheck` ensures dependent services wait for\
+  \ readiness, not just startup.\n7. **Never bake secrets into images** \xE2\u20AC\
+  \u201D use environment variables or Docker secrets, not `ARG`/`ENV` for passwords."
+trigger:
+  keywords:
+  - docker
+version: 1.0.0

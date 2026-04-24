@@ -49,7 +49,6 @@ class OpenCodeAdapter(PlatformAdapter):
         result = InstallResult(platform=self.PLATFORM_ID, success=True)
 
         global_config = Path.home() / ".opencode.json"
-        global_dir = Path.home() / ".opencode"
 
         cfg: dict = {}
         if global_config.exists():
@@ -109,10 +108,14 @@ class OpenCodeAdapter(PlatformAdapter):
         result.files_written.append(str(global_config))
         return result
 
+    @staticmethod
+    def _opencode_config_dir() -> Path:
+        """Return the OpenCode config directory (cross-platform)."""
+        return Path.home() / ".config" / "opencode"
+
     def _install_agent_file(self, skill_count: int, result: InstallResult) -> None:
         """Create agent file so AgentKit appears in 'Select agent'."""
-        # OpenCode uses ~/.config/opencode/agents/ on ALL platforms (including Windows)
-        agent_dir = Path.home() / ".config" / "opencode" / "agents"
+        agent_dir = self._opencode_config_dir() / "agents"
         agent_file = agent_dir / "agentkit.md"
         try:
             agent_dir.mkdir(parents=True, exist_ok=True)
@@ -124,27 +127,27 @@ class OpenCodeAdapter(PlatformAdapter):
                 "---\n\n"
                 f"You are the AgentKit AI — {skill_count} skills loaded, workflow enforcement active.\n\n"
                 "## ⚠️ agentkit is a shell CLI — always use your shell tool to run it\n\n"
-                "NEVER call agentkit as a tool name like <tool name=\"agentkit ...\">\n"
+                "NEVER call agentkit as a tool name like <tool name=\"agentkit ...\">.\n"
                 "ALWAYS use your shell tool (bash on Linux/macOS, powershell/cmd on Windows) "
                 "with the agentkit command as the argument.\n\n"
                 "# MANDATORY: For EVERY task (not just @agentkit-task:)\n\n"
                 "Follow this protocol for ALL requests, no exceptions:\n\n"
-                "1. **Run immediately before anything else:**\n"
-                "   agentkit workflow transition RESEARCH\n"
-                "   (if it fails with 'Invalid transition', first run: agentkit workflow reset)\n\n"
+                "1. **Use your shell tool to run immediately before anything else:**\n"
+                "   ```\n   agentkit workflow transition RESEARCH\n   ```\n"
+                "   (if it fails with 'Invalid transition', first run: `agentkit workflow reset`)\n\n"
                 "2. **Research using the Explore subagent** — do NOT use raw glob/read/grep as your primary "
                 "research method. Use the Task tool with subagent_type='explore' to investigate the codebase.\n\n"
-                "3. **Transition and plan:**\n"
-                "   agentkit workflow transition PLAN\n"
+                "3. **Transition and plan — use your shell tool for each command:**\n"
+                "   ```\n   agentkit workflow transition PLAN\n   ```\n"
                 "   Write plan to .agentkit/current_plan.md in the project root\n"
-                "   agentkit workflow approve\n\n"
-                "4. **Execute:**\n"
-                "   agentkit workflow transition EXECUTE\n\n"
-                "5. **Review and ship:**\n"
-                "   agentkit workflow transition REVIEW\n"
-                "   agentkit workflow transition SHIP\n\n"
-                "6. **For analysis/research tasks with NO code edits:**\n"
-                "   agentkit workflow complete\n\n"
+                "   ```\n   agentkit workflow approve\n   ```\n\n"
+                "4. **Execute — use your shell tool:**\n"
+                "   ```\n   agentkit workflow transition EXECUTE\n   ```\n\n"
+                "5. **Review and ship — use your shell tool:**\n"
+                "   ```\n   agentkit workflow transition REVIEW\n   ```\n"
+                "   ```\n   agentkit workflow transition SHIP\n   ```\n\n"
+                "6. **For analysis/research tasks with NO code edits — use your shell tool:**\n"
+                "   ```\n   agentkit workflow complete\n   ```\n\n"
                 "**NEVER** answer a coding task directly from memory or with plain tool calls. "
                 "Always research first via the Explore subagent. "
                 "Always run agentkit commands via your shell tool from the project directory.\n"
@@ -157,7 +160,7 @@ class OpenCodeAdapter(PlatformAdapter):
     def _remove_plugin_from_server_config(self) -> None:
         """Remove the TUI plugin from opencode.jsonc to prevent double-loading."""
         import json as _json
-        server_cfg = Path.home() / ".config" / "opencode" / "opencode.jsonc"
+        server_cfg = self._opencode_config_dir() / "opencode.jsonc"
         if not server_cfg.exists():
             return
         try:
@@ -234,7 +237,7 @@ class OpenCodeAdapter(PlatformAdapter):
             "WRONG — do not do this:\n"
             "  <tool name=\"agentkit workflow transition RESEARCH\"> ← NEVER\n\n"
             "CORRECT — always do this:\n"
-            "  Use your shell tool to run: agentkit workflow transition RESEARCH\n\n"
+            "  Use your shell tool to run: `agentkit workflow transition RESEARCH`\n\n"
             "This applies to ALL agentkit commands. Always go through your shell tool.\n\n"
             "## General Task Protocol (applies to ALL tasks)\n"
             "When you are running as the AgentKit agent (agentkit ⚡ in the agent switcher), "
@@ -248,20 +251,20 @@ class OpenCodeAdapter(PlatformAdapter):
             "## Workflow Protocol (for @agentkit-task: AND all substantive tasks)\n"
             "At each phase, use your shell tool to run the corresponding agentkit command:\n\n"
             "Step 1 — immediately at the start:\n"
-            "  agentkit workflow transition RESEARCH\n"
-            "  (if it fails with 'Invalid transition', first run: agentkit workflow reset)\n\n"
+            "  ```\n  agentkit workflow transition RESEARCH\n  ```\n"
+            "  (if it fails with 'Invalid transition', first run: `agentkit workflow reset`)\n\n"
             "Step 2 — after reading files, before writing any code:\n"
-            "  agentkit workflow transition PLAN\n"
+            "  ```\n  agentkit workflow transition PLAN\n  ```\n"
             "  Write your plan to .agentkit/current_plan.md in the project root\n"
-            "  agentkit workflow approve\n\n"
+            "  ```\n  agentkit workflow approve\n  ```\n\n"
             "Step 3 — after plan is approved:\n"
-            "  agentkit workflow transition EXECUTE\n\n"
+            "  ```\n  agentkit workflow transition EXECUTE\n  ```\n\n"
             "Step 4 — after all edits, run lint/tests:\n"
-            "  agentkit workflow transition REVIEW\n\n"
+            "  ```\n  agentkit workflow transition REVIEW\n  ```\n\n"
             "Step 5 — after quality gates pass:\n"
-            "  agentkit workflow transition SHIP\n\n"
+            "  ```\n  agentkit workflow transition SHIP\n  ```\n\n"
             "For analysis/research tasks with NO code edits (skip steps 3-5):\n"
-            "  agentkit workflow complete\n\n"
+            "  ```\n  agentkit workflow complete\n  ```\n\n"
             "RULES:\n"
             "- Always run agentkit commands from the user's **project directory**, not from the agentkit package directory\n"
             "- NEVER run `cd <agentkit-package-dir> && python workflow/enforcer.py ...` — this writes state to the wrong location\n"
@@ -327,7 +330,7 @@ class OpenCodeAdapter(PlatformAdapter):
                 result.error = str(e)
 
         # Remove agent persona file
-        agent_file = Path.home() / ".config" / "opencode" / "agents" / "agentkit.md"
+        agent_file = self._opencode_config_dir() / "agents" / "agentkit.md"
         try:
             if agent_file.exists():
                 agent_file.unlink()

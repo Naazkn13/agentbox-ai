@@ -1,0 +1,17 @@
+description: "For test-driven development \xE2\u20AC\u201D write tests before implementation"
+name: agentkit-tdd-workflow
+priority: 1
+prompt: "## TDD Workflow \xE2\u20AC\u201D Core Instructions\n\n1. **Red first:** write\
+  \ a failing test that describes the behaviour you want. Run it \xE2\u20AC\u201D\
+  \ confirm it fails for the right reason.\n2. **Green minimal:** write the *simplest\
+  \ possible* code that makes the test pass. No extras.\n3. **Refactor:** now clean\
+  \ up the implementation. Tests stay green throughout.\n4. **One behaviour per test.**\
+  \ A test with multiple unrelated assertions is a hidden integration test.\n5. **Name\
+  \ tests as sentences:** `it('returns 401 when token is expired')` not `it('works')`.\n\
+  6. **Test behaviour, not implementation.** Don't test private methods or internal\
+  \ state \xE2\u20AC\u201D test outputs and side effects.\n7. **Arrange-Act-Assert\
+  \ (AAA):** structure every test clearly with setup, the action, and the assertion."
+trigger:
+  keywords:
+  - tdd-workflow
+version: 1.0.0

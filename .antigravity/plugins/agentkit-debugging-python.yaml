@@ -1,0 +1,18 @@
+description: For Python errors, exceptions, and tracebacks
+name: agentkit-debugging-python
+priority: 1
+prompt: "## Python Debugger \xE2\u20AC\u201D Core Instructions\n\n1. **Read the full\
+  \ traceback top-to-bottom** before touching any code. The root cause is rarely at\
+  \ the last line shown.\n2. **Identify root cause, not symptoms.** Check variable\
+  \ state at the actual error line, not just where it surfaces.\n3. **Use targeted\
+  \ logging** \xE2\u20AC\u201D `print(f\"DEBUG: {var=}\")` right before the failing\
+  \ line. Confirm your assumption before fixing.\n4. **Check for None before attribute\
+  \ access.** 90% of AttributeErrors are None objects.\n5. **Never suppress exceptions**\
+  \ with bare `except: pass`. Log at minimum: `except Exception as e: logger.error(e)`.\n\
+  6. **Reproduce the original error first** after fixing \xE2\u20AC\u201D confirm\
+  \ you understood it before moving on.\n7. **One change at a time.** Don't batch\
+  \ fixes \xE2\u20AC\u201D you won't know which one worked."
+trigger:
+  keywords:
+  - debugging-python
+version: 1.0.0

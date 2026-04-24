@@ -1,0 +1,24 @@
+description: For SQL injection, XSS, IDOR, broken auth, security misconfiguration,
+  vulnerable components, and SSRF
+name: agentkit-owasp-top10
+priority: 1
+prompt: "## OWASP Top 10 \xE2\u20AC\u201D Core Instructions\n\n1. **Parameterized\
+  \ queries always** \xE2\u20AC\u201D never concatenate user input into SQL strings;\
+  \ use prepared statements or ORM parameterization for every database call.\n2. **Encode\
+  \ all output** \xE2\u20AC\u201D HTML-encode user-supplied data before rendering\
+  \ in templates; use `textContent` not `innerHTML` for DOM insertion.\n3. **Enforce\
+  \ object-level authorization** \xE2\u20AC\u201D validate that the requesting user\
+  \ owns the resource on every read/write, never rely on obscure IDs alone.\n4. **Reject\
+  \ insecure defaults** \xE2\u20AC\u201D change default credentials, disable directory\
+  \ listing, remove debug endpoints and stack traces in production.\n5. **Audit dependencies\
+  \ regularly** \xE2\u20AC\u201D run `npm audit`, `pip-audit`, or `trivy` in CI; block\
+  \ builds on high-severity CVEs; pin dependency versions.\n6. **Validate and restrict\
+  \ outbound requests** \xE2\u20AC\u201D for SSRF, whitelist allowed hosts/schemas,\
+  \ block private IP ranges (169.254.x.x, 10.x, 172.16\xE2\u20AC\u201C31.x, 192.168.x.x).\n\
+  7. **Use security headers on every response** \xE2\u20AC\u201D Content-Security-Policy,\
+  \ X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security must be set\
+  \ by middleware."
+trigger:
+  keywords:
+  - owasp-top10
+version: 1.0.0

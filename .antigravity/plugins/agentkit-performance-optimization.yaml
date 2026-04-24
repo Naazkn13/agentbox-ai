@@ -1,0 +1,24 @@
+description: For profiling, N+1 queries, caching, algorithmic complexity, lazy loading,
+  database indexing, bundle size, and memory leaks
+name: agentkit-performance-optimization
+priority: 1
+prompt: "## Performance Optimization \xE2\u20AC\u201D Core Instructions\n\n1. **Profile\
+  \ before optimizing** \xE2\u20AC\u201D measure with real data using profilers (py-spy,\
+  \ Node --prof, Chrome DevTools) before changing any code; never guess bottlenecks.\n\
+  2. **Eliminate N+1 queries first** \xE2\u20AC\u201D use eager loading (`include`/`joinedload`),\
+  \ `DataLoader` batching in GraphQL, or a single JOIN query instead of looping DB\
+  \ calls.\n3. **Cache at the right layer** \xE2\u20AC\u201D cache expensive queries\
+  \ in Redis with appropriate TTL; use HTTP Cache-Control headers for public data;\
+  \ memoize pure functions in-process.\n4. **Reduce algorithmic complexity** \xE2\u20AC\
+  \u201D replace O(n\xC2\xB2) nested loops with hash-map lookups O(1); sort once then\
+  \ binary-search instead of repeated linear scans.\n5. **Add database indexes on\
+  \ filtered/sorted columns** \xE2\u20AC\u201D use `EXPLAIN ANALYZE` to confirm index\
+  \ usage; composite indexes must match query column order.\n6. **Lazy-load and code-split\
+  \ on the frontend** \xE2\u20AC\u201D dynamic `import()` for routes; defer non-critical\
+  \ scripts; use `loading=\"lazy\"` on images.\n7. **Find memory leaks** \xE2\u20AC\
+  \u201D look for growing caches without eviction, event listeners never removed,\
+  \ closures holding large objects; use heap snapshots in DevTools."
+trigger:
+  keywords:
+  - performance-optimization
+version: 1.0.0

@@ -1,0 +1,20 @@
+description: "For designing and implementing REST APIs \xE2\u20AC\u201D routes, status\
+  \ codes, error handling"
+name: agentkit-rest-api
+priority: 1
+prompt: "## REST API \xE2\u20AC\u201D Core Instructions\n\n1. **Use correct HTTP methods:**\
+  \ GET (read), POST (create), PUT (full replace), PATCH (partial update), DELETE\
+  \ (remove).\n2. **Return correct status codes:** 200 (ok), 201 (created), 204 (no\
+  \ content), 400 (bad request), 401 (unauthenticated), 403 (forbidden), 404 (not\
+  \ found), 409 (conflict), 422 (validation error), 500 (server error).\n3. **Consistent\
+  \ error format:** always return `{ \"error\": \"message\", \"code\": \"MACHINE_READABLE_CODE\"\
+  \ }`.\n4. **Validate at the boundary:** validate and sanitize all input before it\
+  \ touches business logic.\n5. **Never expose internal errors** to clients \xE2\u20AC\
+  \u201D log the full error server-side, return a generic message.\n6. **Resource\
+  \ URLs are nouns, not verbs:** `/users/123` not `/getUser?id=123`.\n7. **Pagination\
+  \ on all list endpoints:** default `limit=20`, max `limit=100`. Return `{ data:\
+  \ [], total, page, limit }`."
+trigger:
+  keywords:
+  - rest-api
+version: 1.0.0
