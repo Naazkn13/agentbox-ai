@@ -119,8 +119,17 @@ switch (cmd) {
   case "workflow": {
     const { spawnSync } = require("child_process");
     const wcmd = sub || "status";
+    // Cross-platform Python detection: python3 on Mac/Linux, python on Windows
+    let pythonCmd = "python3";
+    for (const candidate of ["python3", "python"]) {
+      const check = spawnSync(candidate, ["--version"], { encoding: "utf8" });
+      if (!check.error && check.status === 0) {
+        const out = (check.stdout || check.stderr || "").trim();
+        if (out.startsWith("Python 3")) { pythonCmd = candidate; break; }
+      }
+    }
     const result = spawnSync(
-      "python3",
+      pythonCmd,
       [path.join(AGENTKIT_HOME, "workflow", "enforcer.py"), wcmd, ...args.slice(2)],
       { stdio: "inherit", cwd: process.cwd() },
     );

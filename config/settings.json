@@ -3,6 +3,8 @@
   "_agentkit_version": "0.5.9",
 
   "_usage": "Run `npx agentkit init` — it writes absolute paths into ~/.claude/settings.json automatically.",
+  "_note_python": "Use 'python' on Windows, 'python3' on Mac/Linux. The installer detects this automatically.",
+  "_note_hooks": "On Windows, all hooks use Python (.py) equivalents. On Mac/Linux, bash (.sh) hooks are also available.",
 
   "hooks": {
     "_note": "Replace /ABSOLUTE/PATH/TO/agentkit with the actual install path. Run `npx agentkit init` to do this automatically.",
@@ -11,31 +13,31 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 /ABSOLUTE/PATH/TO/agentkit/hooks/spawn_hook.py"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/spawn_hook.py"
           },
           {
             "type": "command",
-            "command": "python3 /ABSOLUTE/PATH/TO/agentkit/hooks/skill_router_hook.py"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/skill_router_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/session_start.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/session_start_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/memory_inject.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/memory_inject_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/model_router_hook.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/model_router_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/thinking_budget.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/thinking_budget_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/workflow_state.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/workflow_state_hook.py"
           }
         ]
       }
@@ -46,11 +48,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/forced_eval.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/forced_eval_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/plan_gate.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/plan_gate_hook.py"
           }
         ]
       }
@@ -61,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/research_gate.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/research_gate_hook.py"
           }
         ]
       },
@@ -70,11 +72,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/memory_recorder.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/memory_recorder_hook.py"
           },
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/cost_dashboard.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/cost_dashboard_hook.py"
           }
         ]
       },
@@ -83,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/quality_gates.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/quality_gates_hook.py"
           }
         ]
       }
@@ -93,7 +95,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /ABSOLUTE/PATH/TO/agentkit/hooks/session_end.sh"
+            "command": "python /ABSOLUTE/PATH/TO/agentkit/hooks/session_end_hook.py"
           }
         ]
       }
