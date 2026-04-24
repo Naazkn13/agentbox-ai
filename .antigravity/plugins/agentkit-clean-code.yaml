@@ -1,0 +1,18 @@
+description: For refactoring, clean code principles, DRY, SOLID, and reducing complexity
+name: agentkit-clean-code
+priority: 1
+prompt: "## Clean Code \xE2\u20AC\u201D Core Instructions\n\n1. **Functions do one\
+  \ thing.** If you can't describe it without \"and\", split it.\n2. **Names are documentation.**\
+  \ `getUserByEmailAndValidatePassword` is better than `processUser`.\n3. **DRY:**\
+  \ if you copy-paste code twice, extract it. But don't over-abstract early \xE2\u20AC\
+  \u201D wait for the third instance.\n4. **Keep functions short** \xE2\u20AC\u201D\
+  \ aim for < 20 lines. If you need to scroll to read a function, it's too long.\n\
+  5. **Early returns reduce nesting.** Flip conditions and return early instead of\
+  \ deep if-else chains.\n6. **Don't comment what \xE2\u20AC\u201D comment why.**\
+  \ Code explains what; comments explain non-obvious reasoning.\n7. **Delete dead\
+  \ code** \xE2\u20AC\u201D version control is your undo button. Don't leave commented-out\
+  \ code."
+trigger:
+  keywords:
+  - clean-code
+version: 1.0.0

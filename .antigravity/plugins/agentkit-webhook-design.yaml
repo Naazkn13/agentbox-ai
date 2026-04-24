@@ -1,0 +1,25 @@
+description: "For designing reliable webhooks \xE2\u20AC\u201D HMAC verification,\
+  \ idempotency, retries, event schemas, and local testing"
+name: agentkit-webhook-design
+priority: 1
+prompt: "## Webhook Design \xE2\u20AC\u201D Core Instructions\n\n1. **Always verify\
+  \ HMAC signatures first:** before processing any webhook payload, verify the `X-Signature`\
+  \ header using a shared secret \xE2\u20AC\u201D reject with `401` if invalid, `400`\
+  \ if the header is missing.\n2. **Respond 200 immediately, process async:** return\
+  \ `200 OK` within 5 seconds; push the verified payload to a queue or background\
+  \ job for actual processing \xE2\u20AC\u201D never do slow work in the handler.\n\
+  3. **Make all handlers idempotent:** use the event `id` field as an idempotency\
+  \ key stored in a DB/cache \xE2\u20AC\u201D if already processed, return `200` without\
+  \ re-processing.\n4. **Use a consistent event schema:** every event must have `id`,\
+  \ `type`, `created_at`, and `data` fields \xE2\u20AC\u201D consumers rely on this\
+  \ contract.\n5. **Implement exponential backoff with jitter on retries:** wait `min(base\
+  \ * 2^attempt, maxDelay) + random jitter` between delivery attempts; stop after\
+  \ a configurable max (e.g., 10 attempts over 24 hours).\n6. **Sign payloads with\
+  \ a timestamp to prevent replay attacks:** include the timestamp in the signed string\
+  \ (e.g., `t=<unix>&v1=<hmac>`) and reject payloads older than 5 minutes.\n7. **Test\
+  \ locally with ngrok or smee.io:** use `ngrok http 3000` to expose a local server\
+  \ and paste the HTTPS URL as the webhook endpoint during development."
+trigger:
+  keywords:
+  - webhook-design
+version: 1.0.0

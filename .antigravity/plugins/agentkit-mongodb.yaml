@@ -1,0 +1,26 @@
+description: For MongoDB schema design, aggregation pipelines, indexes, transactions,
+  change streams, and Mongoose ODM
+name: agentkit-mongodb
+priority: 1
+prompt: "## MongoDB \xE2\u20AC\u201D Core Instructions\n\n1. **Embed for locality,\
+  \ reference for sharing:** embed sub-documents when data is read together and owned\
+  \ by one parent; use references (`ObjectId`) when data is shared across many documents\
+  \ or grows unboundedly.\n2. **Always create indexes for query patterns:** every\
+  \ field used in `.find()` filters, `.sort()`, and aggregation `$match` stages must\
+  \ have an index \xE2\u20AC\u201D use `explain(\"executionStats\")` to confirm index\
+  \ usage.\n3. **Avoid unbounded arrays:** never embed arrays that can grow indefinitely\
+  \ (e.g., all comments on a post) \xE2\u20AC\u201D this hits the 16 MB document limit;\
+  \ use a separate collection instead.\n4. **Use the aggregation pipeline for complex\
+  \ reads:** `$lookup`, `$group`, `$project`, `$unwind` \xE2\u20AC\u201D never pull\
+  \ large datasets into application memory to compute what MongoDB can do server-side.\n\
+  5. **Use multi-document transactions only when truly needed:** transactions carry\
+  \ overhead; prefer single-document atomicity by embedding related data, or use compensating\
+  \ writes (saga pattern) for cross-collection operations.\n6. **Always project only\
+  \ needed fields:** pass a projection to `.find()` and aggregation `$project` \xE2\
+  \u20AC\u201D never return full documents when you need 3 fields.\n7. **Avoid N+1\
+  \ in Mongoose:** use `.populate()` sparingly; prefer aggregation with `$lookup`\
+  \ for bulk reads, and never call `.populate()` inside a loop."
+trigger:
+  keywords:
+  - mongodb
+version: 1.0.0

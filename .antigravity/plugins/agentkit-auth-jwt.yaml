@@ -1,0 +1,18 @@
+description: For JWT tokens, authentication flows, refresh tokens, and session security
+name: agentkit-auth-jwt
+priority: 1
+prompt: "## Auth & JWT \xE2\u20AC\u201D Core Instructions\n\n1. **Short-lived access\
+  \ tokens** (15 minutes), long-lived refresh tokens (7\xE2\u20AC\u201C30 days) in\
+  \ httpOnly cookies.\n2. **Never store JWTs in localStorage** \xE2\u20AC\u201D vulnerable\
+  \ to XSS. Use httpOnly, Secure, SameSite=Strict cookies.\n3. **Validate on EVERY\
+  \ request** \xE2\u20AC\u201D never trust a token without verifying signature + expiry.\n\
+  4. **Rotate refresh tokens on use** (single-use) \xE2\u20AC\u201D invalidate the\
+  \ old one immediately on exchange.\n5. **Hash passwords with bcrypt** (cost factor\
+  \ \xE2\u2030\xA5 12). Never MD5, SHA1, or plain SHA256 for passwords.\n6. **JWT\
+  \ secret must be long + random** \xE2\u20AC\u201D min 256-bit entropy. Use env var,\
+  \ never hardcode.\n7. **Include only necessary claims** in JWT payload \xE2\u20AC\
+  \u201D no sensitive data (email is fine, password hash is not)."
+trigger:
+  keywords:
+  - auth-jwt
+version: 1.0.0

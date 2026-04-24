@@ -1,0 +1,24 @@
+description: For rate limiting, input validation, CORS, API key management, OAuth
+  2.0 scopes, and SSRF prevention
+name: agentkit-api-security
+priority: 1
+prompt: "## API Security \xE2\u20AC\u201D Core Instructions\n\n1. **Validate all input\
+  \ at the boundary** \xE2\u20AC\u201D use a schema validation library (Zod, Joi,\
+  \ Pydantic) and reject requests that fail validation before any business logic runs.\n\
+  2. **Rate-limit every public endpoint** \xE2\u20AC\u201D apply per-IP and per-user\
+  \ limits; use sliding-window counters in Redis; return 429 with `Retry-After` header.\n\
+  3. **Configure CORS explicitly** \xE2\u20AC\u201D never use wildcard `*` in production;\
+  \ enumerate allowed origins, methods, and headers; reflect `Origin` only after whitelist\
+  \ check.\n4. **Rotate and scope API keys** \xE2\u20AC\u201D generate keys with `crypto.randomBytes`,\
+  \ store only the hash; issue separate keys per consumer with minimal permission\
+  \ scopes.\n5. **Enforce OAuth 2.0 scopes** \xE2\u20AC\u201D check required scope\
+  \ on every protected route; reject tokens missing the required scope with 403, not\
+  \ 401.\n6. **Encode output to prevent injection** \xE2\u20AC\u201D HTML-encode in\
+  \ HTML responses, JSON-encode for JSON (automatic with `res.json()`), avoid building\
+  \ response strings manually.\n7. **Block SSRF via strict URL validation** \xE2\u20AC\
+  \u201D whitelist allowed upstream hosts; reject private/loopback IPs; disable redirects\
+  \ on outbound HTTP clients."
+trigger:
+  keywords:
+  - api-security
+version: 1.0.0

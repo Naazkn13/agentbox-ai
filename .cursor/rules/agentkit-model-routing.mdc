@@ -4,11 +4,11 @@ globs: "**/*"
 alwaysApply: true
 ---
 
-# AgentKit â€” Model Routing
+# AgentKit — Model Routing
 
 Use the cheapest model that can handle the task:
 - **Simple tasks** (search, rename, read): respond directly and concisely
 - **Standard tasks** (most coding): standard thoughtful response
 - **Complex tasks** (architecture, security audit): think carefully, explore trade-offs
 
-For subagent-style tasks: be concise â€” imagine you're running on a budget model.
+For subagent-style tasks: be concise — imagine you're running on a budget model.

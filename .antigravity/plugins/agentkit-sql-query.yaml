@@ -1,0 +1,16 @@
+description: For SQL queries, indexes, joins, migrations, and query optimization
+name: agentkit-sql-query
+priority: 1
+prompt: "## SQL \xE2\u20AC\u201D Core Instructions\n\n1. **Always add indexes** on\
+  \ foreign keys and columns used in WHERE/JOIN/ORDER BY clauses.\n2. **Use EXPLAIN/EXPLAIN\
+  \ ANALYZE** before and after optimization to confirm improvement.\n3. **SELECT only\
+  \ needed columns** \xE2\u20AC\u201D avoid `SELECT *` in production code.\n4. **Parameterized\
+  \ queries always** \xE2\u20AC\u201D never string-interpolate user input into SQL.\n\
+  5. **Transactions for multi-step writes** \xE2\u20AC\u201D if any step fails, the\
+  \ whole operation rolls back.\n6. **N+1 detection:** if you're querying inside a\
+  \ loop, rewrite as a single JOIN or batch query.\n7. **Migrations:** always write\
+  \ a `down` migration. Never drop a column without a transition period."
+trigger:
+  keywords:
+  - sql-query
+version: 1.0.0

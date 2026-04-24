@@ -1,0 +1,25 @@
+description: For Go panics, nil dereferences, goroutine leaks, and race conditions
+name: agentkit-go-debugger
+priority: 1
+prompt: "## Go Debugger \xE2\u20AC\u201D Core Instructions\n\n1. **Read the full panic\
+  \ stack trace** \xE2\u20AC\u201D Go prints every goroutine's stack. The failing\
+  \ goroutine is first; find the topmost frame inside your own package, not the stdlib.\n\
+  2. **Nil pointer dereferences are always a missing initialization or unexpected\
+  \ nil return** \xE2\u20AC\u201D trace back to where the pointer was set; add a nil\
+  \ guard or return an explicit error instead of a bare nil.\n3. **Run with the race\
+  \ detector before calling anything a race** \xE2\u20AC\u201D `go test -race ./...`\
+  \ or `go run -race main.go`. The data race report shows both conflicting goroutines\
+  \ with file/line numbers.\n4. **Goroutine leaks: every goroutine you start must\
+  \ have a defined exit path** \xE2\u20AC\u201D use `context.Context` for cancellation;\
+  \ verify with `runtime.NumGoroutine()` or `goleak` in tests.\n5. **Use `dlv` (Delve)\
+  \ for interactive debugging** \xE2\u20AC\u201D `dlv debug ./cmd/app` then `break`,\
+  \ `continue`, `print`, `goroutines`, `frame`. Never guess when you can inspect live\
+  \ state.\n6. **Profile before optimising** \xE2\u20AC\u201D attach pprof, collect\
+  \ a CPU or heap profile, look at the top 5 functions. Never optimise by intuition\
+  \ in Go.\n7. **One hypothesis at a time** \xE2\u20AC\u201D add a single `log.Printf`\
+  \ or breakpoint, confirm, then fix. Changing multiple things makes Go's deterministic\
+  \ tooling useless."
+trigger:
+  keywords:
+  - go-debugger
+version: 1.0.0

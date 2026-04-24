@@ -1,10 +1,9 @@
-<!-- AGENTKIT_BANNER_START -->
-## AgentKit Active
-<!-- AGENTKIT_BANNER_END -->
+<!-- AGENTKIT_START -->
+# AgentKit Skills
 
-## AgentKit � Skill Instructions
+## gRPC & Protobuf Expert
+**When to activate:** For defining .proto files, gRPC services, code generation, streaming, interceptors, and buf tooling
 
-**gRPC & Protobuf Expert** (activate when: For defining .proto files, gRPC services, code generation, streaming, interceptors, and buf tooling)
 ## gRPC & Protobuf — Core Instructions
 
 1. **Use proto3 syntax always:** declare `syntax = "proto3";` at the top; never use proto2 for new services.
@@ -16,7 +15,9 @@
 7. **Manage .proto files with buf:** use `buf.yaml` + `buf.gen.yaml` for linting, breaking-change detection, and multi-language code generation instead of raw `protoc`.
 
 
-**OpenAPI Design Expert** (activate when: For designing OpenAPI 3.x specs — paths, schemas, auth, status codes, and client generation)
+## OpenAPI Design Expert
+**When to activate:** For designing OpenAPI 3.x specs — paths, schemas, auth, status codes, and client generation
+
 ## OpenAPI Design — Core Instructions
 
 1. **Use OpenAPI 3.x (not Swagger 2.0):** declare `openapi: "3.1.0"` and use `components/schemas` for all reusable models — never inline complex schemas twice.
@@ -28,7 +29,9 @@
 7. **Validate the spec before committing:** run `npx @redocly/cli lint openapi.yaml` or `npx swagger-parser validate` in CI to catch broken `$ref`s and schema errors early.
 
 
-**REST API Design** (activate when: For designing and implementing REST APIs — routes, status codes, error handling)
+## REST API Design
+**When to activate:** For designing and implementing REST APIs — routes, status codes, error handling
+
 ## REST API — Core Instructions
 
 1. **Use correct HTTP methods:** GET (read), POST (create), PUT (full replace), PATCH (partial update), DELETE (remove).
@@ -40,7 +43,9 @@
 7. **Pagination on all list endpoints:** default `limit=20`, max `limit=100`. Return `{ data: [], total, page, limit }`.
 
 
-**Webhook Design Expert** (activate when: For designing reliable webhooks — HMAC verification, idempotency, retries, event schemas, and local testing)
+## Webhook Design Expert
+**When to activate:** For designing reliable webhooks — HMAC verification, idempotency, retries, event schemas, and local testing
+
 ## Webhook Design — Core Instructions
 
 1. **Always verify HMAC signatures first:** before processing any webhook payload, verify the `X-Signature` header using a shared secret — reject with `401` if invalid, `400` if the header is missing.
@@ -52,7 +57,9 @@
 7. **Test locally with ngrok or smee.io:** use `ngrok http 3000` to expose a local server and paste the HTTPS URL as the webhook endpoint during development.
 
 
-**Database Migrations Expert** (activate when: For writing safe database migrations — zero-downtime, rollback strategies, expand/contract)
+## Database Migrations Expert
+**When to activate:** For writing safe database migrations — zero-downtime, rollback strategies, expand/contract
+
 ## Database Migrations Expert — Core Instructions
 
 1. **Additive changes only on first deploy** — never rename or drop a column in a single migration. Use the expand/contract pattern across multiple deploys.
@@ -64,7 +71,9 @@
 7. **Order and number migrations consistently** — use timestamp prefixes (e.g., `20240315_001_add_user_status.sql`) and never reorder or edit a migration that has already run in any environment.
 
 
-**MongoDB Expert** (activate when: For MongoDB schema design, aggregation pipelines, indexes, transactions, change streams, and Mongoose ODM)
+## MongoDB Expert
+**When to activate:** For MongoDB schema design, aggregation pipelines, indexes, transactions, change streams, and Mongoose ODM
+
 ## MongoDB — Core Instructions
 
 1. **Embed for locality, reference for sharing:** embed sub-documents when data is read together and owned by one parent; use references (`ObjectId`) when data is shared across many documents or grows unboundedly.
@@ -76,7 +85,9 @@
 7. **Avoid N+1 in Mongoose:** use `.populate()` sparingly; prefer aggregation with `$lookup` for bulk reads, and never call `.populate()` inside a loop.
 
 
-**Prisma ORM Expert** (activate when: For Prisma schema, migrations, relations, and query patterns)
+## Prisma ORM Expert
+**When to activate:** For Prisma schema, migrations, relations, and query patterns
+
 ## Prisma — Core Instructions
 
 1. **Run `prisma generate` after every schema change** — the client won't reflect your changes otherwise.
@@ -88,7 +99,9 @@
 7. **Never edit migration files** after they've been applied — create a new migration instead.
 
 
-**Redis Caching Expert** (activate when: For Redis caching, pub/sub, TTL strategy, data structures, and eviction policies)
+## Redis Caching Expert
+**When to activate:** For Redis caching, pub/sub, TTL strategy, data structures, and eviction policies
+
 ## Redis Caching — Core Instructions
 
 1. **Choose the right data structure.** String for simple values, Hash for objects, List for queues, Sorted Set for leaderboards/rate-limiting, Set for membership checks.
@@ -100,7 +113,9 @@
 7. **Don't cache mutable results without invalidation.** Either use short TTLs or delete the key on write (`DEL user:123`) to prevent stale data.
 
 
-**SQL Query Expert** (activate when: For SQL queries, indexes, joins, migrations, and query optimization)
+## SQL Query Expert
+**When to activate:** For SQL queries, indexes, joins, migrations, and query optimization
+
 ## SQL — Core Instructions
 
 1. **Always add indexes** on foreign keys and columns used in WHERE/JOIN/ORDER BY clauses.
@@ -112,7 +127,9 @@
 7. **Migrations:** always write a `down` migration. Never drop a column without a transition period.
 
 
-**Go Debugger** (activate when: For Go panics, nil dereferences, goroutine leaks, and race conditions)
+## Go Debugger
+**When to activate:** For Go panics, nil dereferences, goroutine leaks, and race conditions
+
 ## Go Debugger — Core Instructions
 
 1. **Read the full panic stack trace** — Go prints every goroutine's stack. The failing goroutine is first; find the topmost frame inside your own package, not the stdlib.
@@ -124,7 +141,9 @@
 7. **One hypothesis at a time** — add a single `log.Printf` or breakpoint, confirm, then fix. Changing multiple things makes Go's deterministic tooling useless.
 
 
-**Python Debugger** (activate when: For Python errors, exceptions, and tracebacks)
+## Python Debugger
+**When to activate:** For Python errors, exceptions, and tracebacks
+
 ## Python Debugger — Core Instructions
 
 1. **Read the full traceback top-to-bottom** before touching any code. The root cause is rarely at the last line shown.
@@ -136,7 +155,9 @@
 7. **One change at a time.** Don't batch fixes — you won't know which one worked.
 
 
-**Docker Expert** (activate when: For Dockerfiles, docker-compose, containers, images, and networking)
+## Docker Expert
+**When to activate:** For Dockerfiles, docker-compose, containers, images, and networking
+
 ## Docker — Core Instructions
 
 1. **Multi-stage builds** to keep production images small — build stage (with dev tools) → runtime stage (minimal).
@@ -148,7 +169,9 @@
 7. **Never bake secrets into images** — use environment variables or Docker secrets, not `ARG`/`ENV` for passwords.
 
 
-**GitHub Actions Expert** (activate when: For GitHub Actions workflows — CI/CD pipelines, matrix builds, secrets, reusable workflows)
+## GitHub Actions Expert
+**When to activate:** For GitHub Actions workflows — CI/CD pipelines, matrix builds, secrets, reusable workflows
+
 ## GitHub Actions Expert — Core Instructions
 
 1. **Pin actions to a full commit SHA, not a mutable tag** — `actions/checkout@v4` can change under you; `actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683` is immutable. Use SHA pins for all third-party actions in production workflows.
@@ -160,7 +183,9 @@
 7. **Use `workflow_call` for reusable logic** — extract shared CI steps (lint, test, build) into a reusable workflow called with `uses:` rather than copy-pasting YAML across repositories.
 
 
-**Nginx Configuration Expert** (activate when: For Nginx server blocks, reverse proxy, SSL/TLS, rate limiting, gzip, security headers)
+## Nginx Configuration Expert
+**When to activate:** For Nginx server blocks, reverse proxy, SSL/TLS, rate limiting, gzip, security headers
+
 ## Nginx Configuration Expert — Core Instructions
 
 1. **Test every config change with `nginx -t` before reloading** — syntax errors will prevent reload and leave the running config unchanged, but a bad config after a full restart will take the server down.
@@ -172,7 +197,9 @@
 7. **Reload with `nginx -s reload` (graceful), not restart** — reload drains active connections; restart drops them; use restart only when upgrading the Nginx binary itself.
 
 
-**Clean Code & Refactoring** (activate when: For refactoring, clean code principles, DRY, SOLID, and reducing complexity)
+## Clean Code & Refactoring
+**When to activate:** For refactoring, clean code principles, DRY, SOLID, and reducing complexity
+
 ## Clean Code — Core Instructions
 
 1. **Functions do one thing.** If you can't describe it without "and", split it.
@@ -184,7 +211,9 @@
 7. **Delete dead code** — version control is your undo button. Don't leave commented-out code.
 
 
-**Performance Optimization Expert** (activate when: For profiling, N+1 queries, caching, algorithmic complexity, lazy loading, database indexing, bundle size, and memory leaks)
+## Performance Optimization Expert
+**When to activate:** For profiling, N+1 queries, caching, algorithmic complexity, lazy loading, database indexing, bundle size, and memory leaks
+
 ## Performance Optimization — Core Instructions
 
 1. **Profile before optimizing** — measure with real data using profilers (py-spy, Node --prof, Chrome DevTools) before changing any code; never guess bottlenecks.
@@ -196,7 +225,9 @@
 7. **Find memory leaks** — look for growing caches without eviction, event listeners never removed, closures holding large objects; use heap snapshots in DevTools.
 
 
-**API Security Expert** (activate when: For rate limiting, input validation, CORS, API key management, OAuth 2.0 scopes, and SSRF prevention)
+## API Security Expert
+**When to activate:** For rate limiting, input validation, CORS, API key management, OAuth 2.0 scopes, and SSRF prevention
+
 ## API Security — Core Instructions
 
 1. **Validate all input at the boundary** — use a schema validation library (Zod, Joi, Pydantic) and reject requests that fail validation before any business logic runs.
@@ -208,7 +239,9 @@
 7. **Block SSRF via strict URL validation** — whitelist allowed upstream hosts; reject private/loopback IPs; disable redirects on outbound HTTP clients.
 
 
-**Auth & JWT Expert** (activate when: For JWT tokens, authentication flows, refresh tokens, and session security)
+## Auth & JWT Expert
+**When to activate:** For JWT tokens, authentication flows, refresh tokens, and session security
+
 ## Auth & JWT — Core Instructions
 
 1. **Short-lived access tokens** (15 minutes), long-lived refresh tokens (7–30 days) in httpOnly cookies.
@@ -220,7 +253,9 @@
 7. **Include only necessary claims** in JWT payload — no sensitive data (email is fine, password hash is not).
 
 
-**OWASP Top 10 Security Expert** (activate when: For SQL injection, XSS, IDOR, broken auth, security misconfiguration, vulnerable components, and SSRF)
+## OWASP Top 10 Security Expert
+**When to activate:** For SQL injection, XSS, IDOR, broken auth, security misconfiguration, vulnerable components, and SSRF
+
 ## OWASP Top 10 — Core Instructions
 
 1. **Parameterized queries always** — never concatenate user input into SQL strings; use prepared statements or ORM parameterization for every database call.
@@ -232,7 +267,9 @@
 7. **Use security headers on every response** — Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security must be set by middleware.
 
 
-**Secrets Management Expert** (activate when: For hardcoded secrets, .env files, Vault/AWS/GCP secret managers, secret rotation, and credential leak detection)
+## Secrets Management Expert
+**When to activate:** For hardcoded secrets, .env files, Vault/AWS/GCP secret managers, secret rotation, and credential leak detection
+
 ## Secrets Management — Core Instructions
 
 1. **Never hardcode secrets** — no API keys, passwords, tokens, or connection strings in source code, ever; use environment variables or a secrets manager.
@@ -244,7 +281,9 @@
 7. **Audit secret access** — enable CloudTrail / Vault audit logs; alert on unusual access patterns or reads outside deployment windows.
 
 
-**Pytest Workflow** (activate when: For writing and organising pytest tests with fixtures, mocks, and coverage)
+## Pytest Workflow
+**When to activate:** For writing and organising pytest tests with fixtures, mocks, and coverage
+
 ## Pytest Workflow — Core Instructions
 
 1. **One assertion per test concept** — each test should have a single reason to fail. Multiple unrelated assertions in one test make failures ambiguous.
@@ -256,7 +295,9 @@
 7. **Run coverage with `--cov` and check branch coverage** — line coverage hides untested conditional branches; use `--cov-branch`.
 
 
-**TDD Workflow** (activate when: For test-driven development — write tests before implementation)
+## TDD Workflow
+**When to activate:** For test-driven development — write tests before implementation
+
 ## TDD Workflow — Core Instructions
 
 1. **Red first:** write a failing test that describes the behaviour you want. Run it — confirm it fails for the right reason.
@@ -267,8 +308,4 @@
 6. **Test behaviour, not implementation.** Don't test private methods or internal state — test outputs and side effects.
 7. **Arrange-Act-Assert (AAA):** structure every test clearly with setup, the action, and the assertion.
 
-
-<!-- AGENTKIT_ANALYTICS_START -->
-## AgentKit Analytics
-No sessions logged yet.
-<!-- AGENTKIT_ANALYTICS_END -->
+<!-- AGENTKIT_END -->

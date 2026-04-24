@@ -1,0 +1,23 @@
+description: For defining .proto files, gRPC services, code generation, streaming,
+  interceptors, and buf tooling
+name: agentkit-grpc
+priority: 1
+prompt: "## gRPC & Protobuf \xE2\u20AC\u201D Core Instructions\n\n1. **Use proto3\
+  \ syntax always:** declare `syntax = \"proto3\";` at the top; never use proto2 for\
+  \ new services.\n2. **Never change field numbers:** once a field number is used\
+  \ in production, it is permanent \xE2\u20AC\u201D removing a field means reserving\
+  \ its number with `reserved`.\n3. **Map gRPC status codes correctly:** use `NOT_FOUND`\
+  \ (5), `INVALID_ARGUMENT` (3), `ALREADY_EXISTS` (6), `UNAUTHENTICATED` (16), `PERMISSION_DENIED`\
+  \ (7), `INTERNAL` (13) \xE2\u20AC\u201D never return raw `UNKNOWN`.\n4. **Always\
+  \ set deadlines on the client side:** never make an RPC without a context deadline/timeout;\
+  \ servers must respect `ctx.Done()`.\n5. **Use interceptors for cross-cutting concerns:**\
+  \ logging, auth token injection, retry, and metrics belong in unary/stream interceptors,\
+  \ not in handler code.\n6. **Prefer server-streaming over polling:** if a client\
+  \ needs to watch for updates, use server-streaming RPC instead of repeated unary\
+  \ calls.\n7. **Manage .proto files with buf:** use `buf.yaml` + `buf.gen.yaml` for\
+  \ linting, breaking-change detection, and multi-language code generation instead\
+  \ of raw `protoc`."
+trigger:
+  keywords:
+  - grpc
+version: 1.0.0

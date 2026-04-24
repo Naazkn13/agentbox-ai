@@ -1,0 +1,25 @@
+description: "For writing safe database migrations \xE2\u20AC\u201D zero-downtime,\
+  \ rollback strategies, expand/contract"
+name: agentkit-database-migrations
+priority: 1
+prompt: "## Database Migrations Expert \xE2\u20AC\u201D Core Instructions\n\n1. **Additive\
+  \ changes only on first deploy** \xE2\u20AC\u201D never rename or drop a column\
+  \ in a single migration. Use the expand/contract pattern across multiple deploys.\n\
+  2. **Always write a down migration** \xE2\u20AC\u201D every `up` must have a tested\
+  \ `down`. If a rollback is destructive (data loss), document it explicitly and gate\
+  \ it behind a flag.\n3. **Never rename a column directly** \xE2\u20AC\u201D add\
+  \ the new column, backfill data, update all code, then drop the old column in a\
+  \ separate later migration.\n4. **Test rollback before merging** \xE2\u20AC\u201D\
+  \ run `migrate up` then `migrate down` then `migrate up` in CI. If down is a no-op,\
+  \ mark it as intentional, never leave it blank.\n5. **Add indexes concurrently on\
+  \ live tables** \xE2\u20AC\u201D `CREATE INDEX CONCURRENTLY` in Postgres; plain\
+  \ `CREATE INDEX` locks the table. Use the non-locking form in production migrations.\n\
+  6. **Keep migrations idempotent** \xE2\u20AC\u201D wrap DDL in existence checks\
+  \ (`IF NOT EXISTS`, `IF EXISTS`) so re-running a migration does not error.\n7. **Order\
+  \ and number migrations consistently** \xE2\u20AC\u201D use timestamp prefixes (e.g.,\
+  \ `20240315_001_add_user_status.sql`) and never reorder or edit a migration that\
+  \ has already run in any environment."
+trigger:
+  keywords:
+  - database-migrations
+version: 1.0.0

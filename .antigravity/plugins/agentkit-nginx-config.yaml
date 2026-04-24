@@ -1,0 +1,27 @@
+description: For Nginx server blocks, reverse proxy, SSL/TLS, rate limiting, gzip,
+  security headers
+name: agentkit-nginx-config
+priority: 2
+prompt: "## Nginx Configuration Expert \xE2\u20AC\u201D Core Instructions\n\n1. **Test\
+  \ every config change with `nginx -t` before reloading** \xE2\u20AC\u201D syntax\
+  \ errors will prevent reload and leave the running config unchanged, but a bad config\
+  \ after a full restart will take the server down.\n2. **Use `location` specificity\
+  \ rules correctly** \xE2\u20AC\u201D exact match (`=`) beats prefix (`^~`) beats\
+  \ regex (`~`/`~*`) beats longest prefix; unexpected routing bugs are almost always\
+  \ a specificity mistake.\n3. **Terminate SSL at Nginx, never pass raw HTTPS upstream**\
+  \ \xE2\u20AC\u201D use `proxy_pass http://` to your backend over internal network;\
+  \ only the Nginx-to-client leg should be HTTPS.\n4. **Set `proxy_set_header` for\
+  \ every reverse-proxied backend** \xE2\u20AC\u201D at minimum: `Host`, `X-Real-IP`,\
+  \ `X-Forwarded-For`, and `X-Forwarded-Proto`; backends need these to construct correct\
+  \ URLs and log real IPs.\n5. **Define rate limit zones in the `http` block, not\
+  \ `server` or `location`** \xE2\u20AC\u201D `limit_req_zone` is a declaration; `limit_req`\
+  \ is the enforcement; splitting them across includes is a common misconfiguration.\n\
+  6. **Enable `gzip` only for compressible MIME types** \xE2\u20AC\u201D never gzip\
+  \ images, video, or already-compressed formats; always set `gzip_vary on` so CDNs\
+  \ cache the correct version.\n7. **Reload with `nginx -s reload` (graceful), not\
+  \ restart** \xE2\u20AC\u201D reload drains active connections; restart drops them;\
+  \ use restart only when upgrading the Nginx binary itself."
+trigger:
+  keywords:
+  - nginx-config
+version: 1.0.0
