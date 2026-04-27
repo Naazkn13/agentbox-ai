@@ -1,7 +1,7 @@
 {
-  "name": "agentkit-ai",
-  "version": "0.5.21",
-  "description": "Intelligent orchestration layer for agentic coding — 50 skills, smart skill loading, persistent memory, 70% cost reduction, enforced workflows, and 10+ platform support.",
+  "name": "agentbox-ai",
+  "version": "0.5.22",
+  "description": "Intelligent orchestration layer for agentic coding — 50 skills, smart skill loading, persistent memory, 70% cost reduction, enforced workflows, and 10+ platform support. Windows-compatible fork of AgentKit.",
   "keywords": [
     "claude-code",
     "ai-coding",
@@ -13,18 +13,19 @@
     "skill-router",
     "memory",
     "workflow",
-    "anthropic"
+    "anthropic",
+    "windows"
   ],
-  "homepage": "https://github.com/Ajaysable123/AgentKit",
+  "homepage": "https://github.com/Naazkn13/AgentBox",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ajaysable123/AgentKit.git"
+    "url": "https://github.com/Naazkn13/AgentBox.git"
   },
   "bugs": {
-    "url": "https://github.com/Ajaysable123/AgentKit/issues"
+    "url": "https://github.com/Naazkn13/AgentBox/issues"
   },
   "license": "MIT",
-  "author": "AgentKit Team",
+  "author": "Nuzhat Khan",
   "bin": {
     "agentkit": "cli/index.js"
   },

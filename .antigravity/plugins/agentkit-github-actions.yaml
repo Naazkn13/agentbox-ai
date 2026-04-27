@@ -1,0 +1,27 @@
+description: "For GitHub Actions workflows \xE2\u20AC\u201D CI/CD pipelines, matrix\
+  \ builds, secrets, reusable workflows"
+name: agentkit-github-actions
+priority: 1
+prompt: "## GitHub Actions Expert \xE2\u20AC\u201D Core Instructions\n\n1. **Pin actions\
+  \ to a full commit SHA, not a mutable tag** \xE2\u20AC\u201D `actions/checkout@v4`\
+  \ can change under you; `actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683`\
+  \ is immutable. Use SHA pins for all third-party actions in production workflows.\n\
+  2. **Never hardcode secrets \xE2\u20AC\u201D always use `secrets` context** \xE2\
+  \u20AC\u201D reference as `${{ secrets.MY_SECRET }}`. Never echo secrets; GitHub\
+  \ masks known secret values but not derived ones.\n3. **Use `concurrency` groups\
+  \ to cancel stale runs** \xE2\u20AC\u201D on push/PR workflows, set `concurrency.cancel-in-progress:\
+  \ true` so a new push cancels the in-flight run for the same branch.\n4. **Separate\
+  \ CI (test) from CD (deploy) workflows** \xE2\u20AC\u201D CI runs on every PR; CD\
+  \ runs only on merge to `main` or on explicit tags. Coupling them leads to accidental\
+  \ deploys.\n5. **Cache dependencies explicitly** \xE2\u20AC\u201D `actions/cache`\
+  \ keyed on the lockfile hash eliminates redundant installs. Without caching, a 2-minute\
+  \ `npm install` runs on every commit.\n6. **Use `environment` for production deploys**\
+  \ \xE2\u20AC\u201D environments enforce required reviewers and scoped secrets, preventing\
+  \ accidental prod deployments from feature branches.\n7. **Use `workflow_call` for\
+  \ reusable logic** \xE2\u20AC\u201D extract shared CI steps (lint, test, build)\
+  \ into a reusable workflow called with `uses:` rather than copy-pasting YAML across\
+  \ repositories."
+trigger:
+  keywords:
+  - github-actions
+version: 1.0.0

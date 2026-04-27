@@ -1,0 +1,18 @@
+description: For Prisma schema, migrations, relations, and query patterns
+name: agentkit-prisma-orm
+priority: 1
+prompt: "## Prisma \xE2\u20AC\u201D Core Instructions\n\n1. **Run `prisma generate`\
+  \ after every schema change** \xE2\u20AC\u201D the client won't reflect your changes\
+  \ otherwise.\n2. **Use `prisma migrate dev` in development**, `prisma migrate deploy`\
+  \ in production \xE2\u20AC\u201D never use `db push` in production.\n3. **Optional\
+  \ relations:** use `?` on the field type (`User?`) and include the foreign key field\
+  \ explicitly.\n4. **N+1 fix:** use `include` to eager-load relations in a single\
+  \ query, not nested `findUnique` calls.\n5. **Transactions for multi-step writes:**\
+  \ use `prisma.$transaction([...])` or interactive transactions.\n6. **Rollback a\
+  \ migration:** `prisma migrate resolve --rolled-back <migration_name>` then fix\
+  \ and re-run.\n7. **Never edit migration files** after they've been applied \xE2\
+  \u20AC\u201D create a new migration instead."
+trigger:
+  keywords:
+  - prisma-orm
+version: 1.0.0

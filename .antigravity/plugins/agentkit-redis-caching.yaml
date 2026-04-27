@@ -1,0 +1,22 @@
+description: For Redis caching, pub/sub, TTL strategy, data structures, and eviction
+  policies
+name: agentkit-redis-caching
+priority: 2
+prompt: "## Redis Caching \xE2\u20AC\u201D Core Instructions\n\n1. **Choose the right\
+  \ data structure.** String for simple values, Hash for objects, List for queues,\
+  \ Sorted Set for leaderboards/rate-limiting, Set for membership checks.\n2. **Always\
+  \ set a TTL.** Every cache key must have an expiry \xE2\u20AC\u201D `SET key value\
+  \ EX 3600`. Keys without TTL accumulate and cause memory pressure.\n3. **Use cache-aside\
+  \ pattern by default.** Read from cache \xE2\u2020\u2019 on miss, read DB \xE2\u2020\
+  \u2019 write to cache. Never write to cache and DB in the same transaction.\n4.\
+  \ **Namespace your keys.** Use `app:entity:id` format (`user:session:abc123`). Avoids\
+  \ collisions and enables pattern-based deletion.\n5. **Handle cache stampede.**\
+  \ On TTL expiry, multiple processes may hit DB simultaneously. Use a lock or probabilistic\
+  \ early expiration.\n6. **Set maxmemory + eviction policy.** Default is `noeviction`\
+  \ (errors on full). Set `allkeys-lru` for caches, `volatile-lru` when only TTL keys\
+  \ should be evicted.\n7. **Don't cache mutable results without invalidation.** Either\
+  \ use short TTLs or delete the key on write (`DEL user:123`) to prevent stale data."
+trigger:
+  keywords:
+  - redis-caching
+version: 1.0.0

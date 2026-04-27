@@ -12,11 +12,13 @@
 # }
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 INPUT=$(cat)
 
 AGENTKIT_HOME="${AGENTKIT_HOME:-$(dirname "$(dirname "$(realpath "$0")")")}"
 
-echo "$INPUT" | python3 "${AGENTKIT_HOME}/memory/handoff.py" generate
+echo "$INPUT" | $PYTHON "${AGENTKIT_HOME}/memory/handoff.py" generate
 
 exit 0
