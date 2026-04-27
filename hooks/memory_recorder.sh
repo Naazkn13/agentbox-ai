@@ -13,10 +13,12 @@
 # }
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 INPUT=$(cat)
 
-TOOL_NAME=$(echo "$INPUT" | python3 -c \
+TOOL_NAME=$(echo "$INPUT" | $PYTHON -c \
   "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
 
 # Only capture for relevant tool types
@@ -27,6 +29,6 @@ fi
 AGENTKIT_HOME="${AGENTKIT_HOME:-$(dirname "$(dirname "$(realpath "$0")")")}"
 
 # Run recorder in background — don't block the agent
-echo "$INPUT" | python3 "${AGENTKIT_HOME}/memory/recorder.py" &
+echo "$INPUT" | $PYTHON "${AGENTKIT_HOME}/memory/recorder.py" &
 
 exit 0

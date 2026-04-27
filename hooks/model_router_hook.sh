@@ -9,6 +9,8 @@
 # Outputs to stdout: JSON with optional system_prompt injection.
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 AGENTKIT_HOME="${AGENTKIT_HOME:-$(cd "$(dirname "$0")/.." && pwd)}"
 DATA_DIR="$AGENTKIT_HOME/data"
@@ -17,20 +19,20 @@ mkdir -p "$DATA_DIR"
 # ── Read stdin ──────────────────────────────────────────────────────────────
 INPUT=$(cat)
 
-# Extract fields via python3 (jq may not be installed)
-SESSION_ID=$(echo "$INPUT" | python3 -c "
+# Extract fields via $PYTHON (jq may not be installed)
+SESSION_ID=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('session_id', 'unknown'))
 " 2>/dev/null || echo "unknown")
 
-PROMPT=$(echo "$INPUT" | python3 -c "
+PROMPT=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('prompt', ''))
 " 2>/dev/null || echo "")
 
-IS_SUBAGENT=$(echo "$INPUT" | python3 -c "
+IS_SUBAGENT=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 # Heuristic: subagent prompts come from Agent tool invocations
@@ -38,22 +40,22 @@ print('true' if d.get('is_subagent', False) else 'false')
 " 2>/dev/null || echo "false")
 
 # ── Run model router ─────────────────────────────────────────────────────────
-ROUTER_OUT=$(python3 "$AGENTKIT_HOME/router/model_router.py" \
+ROUTER_OUT=$($PYTHON "$AGENTKIT_HOME/router/model_router.py" \
     --prompt "$PROMPT" \
     --is-subagent "$IS_SUBAGENT" \
     2>/dev/null || echo '{"model":"claude-sonnet-4-6","tier":"standard","reason":"fallback"}')
 
-MODEL=$(echo "$ROUTER_OUT" | python3 -c "import sys,json; print(json.load(sys.stdin)['model'])")
-TIER=$(echo  "$ROUTER_OUT" | python3 -c "import sys,json; print(json.load(sys.stdin)['tier'])")
-REASON=$(echo "$ROUTER_OUT" | python3 -c "import sys,json; print(json.load(sys.stdin)['reason'])")
+MODEL=$(echo "$ROUTER_OUT" | $PYTHON -c "import sys,json; print(json.load(sys.stdin)['model'])")
+TIER=$(echo  "$ROUTER_OUT" | $PYTHON -c "import sys,json; print(json.load(sys.stdin)['tier'])")
+REASON=$(echo "$ROUTER_OUT" | $PYTHON -c "import sys,json; print(json.load(sys.stdin)['reason'])")
 
 # ── Run thinking budget tuner ────────────────────────────────────────────────
-THINKING_OUT=$(python3 "$AGENTKIT_HOME/router/thinking_budget.py" \
+THINKING_OUT=$($PYTHON "$AGENTKIT_HOME/router/thinking_budget.py" \
     --prompt "$PROMPT" \
     2>/dev/null || echo '{"budget_tokens":8192,"tier":"moderate","reason":"fallback"}')
 
-THINKING_TOKENS=$(echo "$THINKING_OUT" | python3 -c "import sys,json; print(json.load(sys.stdin)['budget_tokens'])")
-THINKING_TIER=$(echo   "$THINKING_OUT" | python3 -c "import sys,json; print(json.load(sys.stdin)['tier'])")
+THINKING_TOKENS=$(echo "$THINKING_OUT" | $PYTHON -c "import sys,json; print(json.load(sys.stdin)['budget_tokens'])")
+THINKING_TIER=$(echo   "$THINKING_OUT" | $PYTHON -c "import sys,json; print(json.load(sys.stdin)['tier'])")
 
 # ── Persist env vars for other hooks ────────────────────────────────────────
 ENV_FILE="$DATA_DIR/env_${SESSION_ID}.sh"
@@ -75,7 +77,7 @@ elif [ "$TIER" = "simple" ]; then
 fi
 
 if [ -n "$HINT" ]; then
-  python3 -c "
+  $PYTHON -c "
 import json, sys
 print(json.dumps({'system_prompt_suffix': '$HINT'}))
 "
