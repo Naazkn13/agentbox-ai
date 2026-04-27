@@ -12,13 +12,15 @@
 # }
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 # Read JSON input from stdin
 INPUT=$(cat)
 
 # Extract fields with python (available everywhere, no jq dependency)
-TOOL_NAME=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
-SESSION_ID=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('session_id',''))" 2>/dev/null || echo "")
+TOOL_NAME=$(echo "$INPUT" | $PYTHON -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
+SESSION_ID=$(echo "$INPUT" | $PYTHON -c "import sys,json; d=json.load(sys.stdin); print(d.get('session_id',''))" 2>/dev/null || echo "")
 
 # Only apply for action tools where skills are relevant
 if [[ ! "$TOOL_NAME" =~ ^(Edit|Bash|Write|MultiEdit)$ ]]; then

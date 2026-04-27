@@ -7,13 +7,15 @@
 # Also detects explicit workflow commands in the prompt.
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 AGENTKIT_HOME="${AGENTKIT_HOME:-$(cd "$(dirname "$0")/.." && pwd)}"
 PROJECT_ROOT="${AGENTKIT_PROJECT:-$(pwd)}"
 
 INPUT=$(cat)
 
-PROMPT=$(echo "$INPUT" | python3 -c "
+PROMPT=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('prompt', ''))
@@ -24,14 +26,14 @@ PROMPT_LOWER=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]')
 # ── Handle explicit workflow commands in the prompt ─────────────────────────
 if echo "$PROMPT_LOWER" | grep -qE "agentkit workflow (approve|reset|status|skip)"; then
   if echo "$PROMPT_LOWER" | grep -q "approve"; then
-    python3 "$AGENTKIT_HOME/workflow/enforcer.py" approve 2>/dev/null || true
+    $PYTHON "$AGENTKIT_HOME/workflow/enforcer.py" approve 2>/dev/null || true
   elif echo "$PROMPT_LOWER" | grep -q "reset"; then
-    python3 "$AGENTKIT_HOME/workflow/enforcer.py" reset 2>/dev/null || true
+    $PYTHON "$AGENTKIT_HOME/workflow/enforcer.py" reset 2>/dev/null || true
   fi
 fi
 
 # ── Get current workflow state ───────────────────────────────────────────────
-STATE=$(python3 -c "
+STATE=$($PYTHON -c "
 import sys
 sys.path.insert(0, '$AGENTKIT_HOME')
 from workflow.enforcer import WorkflowEnforcer
@@ -61,7 +63,7 @@ if [ "$STATE" != "IDLE" ]; then
   esac
 
   if [ -n "$HINT" ]; then
-    python3 -c "
+    $PYTHON -c "
 import json
 print(json.dumps({'system_prompt_suffix': '$HINT'}))
 "

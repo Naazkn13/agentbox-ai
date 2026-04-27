@@ -6,6 +6,8 @@
 # Allows edits to the plan file itself (.agentkit/current_plan.md).
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 AGENTKIT_HOME="${AGENTKIT_HOME:-$(cd "$(dirname "$0")/.." && pwd)}"
 PROJECT_ROOT="${AGENTKIT_PROJECT:-$(pwd)}"
@@ -16,13 +18,13 @@ STATE_FILE="$AGENTKIT_DIR/workflow.json"
 # ── Read the file being edited from the hook JSON ───────────────────────────
 INPUT=$(cat)
 
-TOOL_NAME=$(echo "$INPUT" | python3 -c "
+TOOL_NAME=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('tool_name', ''))
 " 2>/dev/null || echo "")
 
-TOOL_INPUT=$(echo "$INPUT" | python3 -c "
+TOOL_INPUT=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 inp = d.get('tool_input', {})
@@ -39,7 +41,7 @@ if [[ "$TOOL_INPUT" == *"current_plan.md"* ]]; then
 fi
 
 # ── Delegate to workflow enforcer ───────────────────────────────────────────
-python3 "$AGENTKIT_HOME/workflow/enforcer.py" on-edit "$TOOL_INPUT" 2>/dev/null
+$PYTHON "$AGENTKIT_HOME/workflow/enforcer.py" on-edit "$TOOL_INPUT" 2>/dev/null
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then

@@ -9,13 +9,15 @@
 # instead it injects a lightweight behavioural nudge via the system prompt.
 
 set -euo pipefail
+# Cross-platform Python: $PYTHON on Linux/macOS, python on Windows
+PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo "python3")
 
 AGENTKIT_HOME="${AGENTKIT_HOME:-$(cd "$(dirname "$0")/.." && pwd)}"
 DATA_DIR="$AGENTKIT_HOME/data"
 
 INPUT=$(cat)
 
-SESSION_ID=$(echo "$INPUT" | python3 -c "
+SESSION_ID=$(echo "$INPUT" | $PYTHON -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('session_id', 'unknown'))
@@ -33,13 +35,13 @@ THINKING_TOKENS="${AGENTKIT_THINKING:-8192}"
 
 # Only inject a hint for non-default tiers
 if [ "$THINKING_TIER" = "deep" ]; then
-  python3 -c "
+  $PYTHON -c "
 import json
 hint = '[AgentKit] Deep reasoning mode: take time to explore multiple approaches and verify your reasoning before committing.'
 print(json.dumps({'system_prompt_suffix': hint}))
 "
 elif [ "$THINKING_TIER" = "off" ]; then
-  python3 -c "
+  $PYTHON -c "
 import json
 hint = '[AgentKit] Trivial task: respond directly without over-thinking.'
 print(json.dumps({'system_prompt_suffix': hint}))
